@@ -1,0 +1,31 @@
+<nav class="navbar navbar-default navbar-fixed-top" ng-init="NavInit()">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target="#example-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">集影网</a>
+        </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <% navArray.forEach(function(nav){ %>
+                    <% if (nav.active) { %>
+                        <li class="navActive">
+                    <% } else { %>
+                        <li>
+                    <% } %>
+                    <a href="<%= nav.router %>" title="<%= nav.name %>"><span><%= nav.name %></span></a>
+                </li>
+                <% }) %>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"> 
+                <li><a href="#mymodal1" id="register" onclick="return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li> 
+                <li><a href="#mymodal" id="login" onclick="return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li> 
+            </ul> 
+        </div>
+    </div>
+</nav>

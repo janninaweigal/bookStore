@@ -1,0 +1,33 @@
+<div class="jumbotron bck" ng-init="HeaderInit()">
+    <div class="container" style="padding-top:20px">
+        <div class="row-fluid">
+            <div class="col-md-5 col-sm-5">
+                <img src="images/logo.png" alt="logo" style="width:200px;margin-top:35px;cursor:pointer;">
+            </div>
+            <div class="col-md-7 col-sm-7 clearR">
+                <div class="clearR pull-right" style="padding-top:40px">
+                    <div>
+                        <span class="label label-danger">热门标签：</span>
+                        <% labels.forEach(function(label){ %>
+                            <a href="<%= label.router %>" title="<%= label.name %>" onclick="return false;" target="_blank"  class="badge badge-info"><%= label.name %></a>
+                        <% }) %>
+                    </div>
+                    <form class="form-inline" action="/search.jspx"  style="margin-top:3px">
+                        <div class="form-group">
+                            <input class="form-control" value="请输入关键词" type="text" onfocus="if(this.value=='请输入关键词')this.value=''" onblur="if(this.value=='')this.value='请输入关键词'" maxlength="50" autocomplete="off"/>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">所有消息<span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <% labels.forEach(function(label){ %>
+                                        <li><a href="javascript:void(0)" onclick="return false;"><%= label.name %></a></li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">搜索</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

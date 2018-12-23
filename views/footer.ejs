@@ -1,0 +1,30 @@
+<% include login %>
+<% include register %>
+<div class="footer">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="col-md-5 col-sm-6 col-xs-12">
+                <h4><%= footers.left.title %></h4>
+                <% footers.left.study.forEach(function(item){ %>
+                    <a href="<%= item.href %>" style="color:#fff;"><%= item.name %>&nbsp;</a>
+                <% }) %>
+                <br/>
+                <% footers.left.contact.forEach(function(item){ %>
+                 <span><%= item.way %>&nbsp;</span>
+                <% }) %>
+            </div>
+            <div class="col-md-5 col-md-offset-2 col-sm-6 col-xs-12">
+                <h4><%= footers.right.title %></h4>
+                <% footers.right.images.forEach(function(item){ %>
+                 <img src="<%= item.src %>" width="150" height="150" alt="<%= item.name %>"/>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+<!--返回顶部-->
+<div class="xiangshang" id="xiangshang" title="返回顶部"></div>
+<script src="/js/main.js"></script>
+</body>
+</html>
+

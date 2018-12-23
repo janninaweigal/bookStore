@@ -1,0 +1,47 @@
+/*公共样式*/
+h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
+    font-weight: bold;
+    line-height: 20px;
+}
+.bck{background: url("../images/bck.png") repeat center center;}
+.bck img:hover{
+    -webkit-transform: translateY(-5px);
+    -moz-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+.margin-top-50{
+    margin-top:50px;
+}
+.text-error {
+    color: #b94a48;
+}
+/*导航*/
+ul.navbar-nav li:hover{
+    background-color: #cccccc;
+}
+ul.navbar-nav li:hover span{
+    color:#000;
+}
+.navActive{
+    background-color: #345e8c;
+}
+.navActive span{
+    color:#fff;
+}
+/*页脚*/
+.footer{
+    padding: 40px 20px;
+    color: #C0E1FF;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
+    background: #325B87;
+}
+.footer img{
+    margin-right:5px;
+}
+/*向上箭头*/
+.xiangshang{width:48px;height: 43px;display: block;background: url("../images/fanhui.png") no-repeat;position: fixed;bottom: 80px;right: 30px;}
+.xiangshang:hover{background: url("../images/fanhui1.png") no-repeat;}
+.xiaoshou li a{cursor:pointer;}
+.xiaoshou li a:hover{color: red;}
