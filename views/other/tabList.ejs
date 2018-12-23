@@ -1,0 +1,45 @@
+<div>
+    <!--tablist start-->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="text-error"><h4>点击排行&nbsp;</h4></li>
+        <% tabList.forEach(function(item,index){ %>
+            <% if (index==0) { %>
+                <li class="active">
+            <% } else { %>
+                <li>
+            <% } %>
+            <a href="<%= '#'+item.id %>" onClick="return false;" data-toggle="tab"><%= item.name %></a>
+        </li>
+        <% }) %>
+    </ul>
+
+    <!-- Tab panes start -->
+    <div class="tab-content">
+        <% tabList.forEach(function(tab,z){ %>
+            <% if (z==0) { %>
+                <div role="tabpanel" class="tab-pane active" id="<%= tab.id %>">
+            <% } else { %>
+                <div role="tabpanel" class="tab-pane" id="<%= tab.id %>">
+            <% } %>
+            <div class="list-group">
+                <% tab.list.forEach(function(i,index){ %>
+                    <a href="javascript:void(0)" class="list-group-item" title="<%= i.content %>">
+                        <% if(i.num ==1) { %>
+                            <span class="badge pull-left" style="background-color:#FF858E;">&nbsp;<%= i.num %>&nbsp;&nbsp;</span>
+                        <% } else if(i.num==2) { %>
+                            <span class="badge pull-left" style="background-color:#77D549;">&nbsp;<%= i.num %>&nbsp;&nbsp;</span>
+                        <% } else if(i.num==3) { %>
+                            <span class="badge pull-left" style="background-color:#62C1FF;">&nbsp;<%= i.num %>&nbsp;&nbsp;</span>
+                        <% } else { %>
+                            <span class="badge pull-left" style="background-color:#979598;">&nbsp;<%= i.num %>&nbsp;&nbsp;</span>
+                        <% } %>&nbsp;
+                        <%= i.content.length>14?i.content.substring(0,14)+'...':i.content %>
+                    </a>
+                <% }) %>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    <!-- end Tab panes -->
+    <!--end tablist-->
+</div>

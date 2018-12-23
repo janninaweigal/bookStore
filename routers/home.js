@@ -1,6 +1,8 @@
 const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const footers = require('../json/footers').default;
+const tabList = require('../json/tabList').default;
+const images = require('../json/images').default;
 import {switchNav} from '../utils/common'
 router.get('/', async(ctx, next)=>{
     let types;
@@ -32,6 +34,8 @@ router.get('/', async(ctx, next)=>{
                 router:'hotGoods'
             }
         ],
+        tabList:tabList,
+        images:images,
         type: null,
         postsLength: 0,
         postsPageLength: 0

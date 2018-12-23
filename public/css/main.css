@@ -4,6 +4,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
     line-height: 20px;
 }
+.ellipsisText{overflow: hidden;white-space: nowrap;text-overflow: ellipsis}
 .bck{background: url("../images/bck.png") repeat center center;}
 .bck img:hover{
     -webkit-transform: translateY(-5px);
@@ -28,6 +29,25 @@ ul.navbar-nav li:hover span{
 }
 .navActive span{
     color:#fff;
+}
+/*轮播图*/
+.carousel-indicators {
+    bottom:0px;
+}
+.carousel-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 15px;
+    background: #333;
+    background: rgba(0,0,0,0.75);
+}
+.carousel-caption h4,.carousel-caption p {
+    text-align:left;
+}
+.carousel-caption h4 {
+    color:#337ab7;
 }
 /*页脚*/
 .footer{
