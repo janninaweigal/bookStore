@@ -4,7 +4,7 @@ const config = {
     HOST: 'http://localhost:',
     //数据库配置
     database: {
-        DATABASE: 'dangdang',
+        DATABASE: 'nodesql',
         USERNAME: 'root',
         PASSWORD: 'jannina@@',
         PORT: '3306',

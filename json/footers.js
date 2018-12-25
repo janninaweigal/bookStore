@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     "left":{
         "title":"学习链接",
         "study":[

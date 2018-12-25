@@ -1,4 +1,4 @@
-export default [
+module.exports =[
     {"id":"week","name":"周","list":[{
       "num":"1",
       "content":"2017美国悬疑惊悚《从未在此》BD720P.中英双字"

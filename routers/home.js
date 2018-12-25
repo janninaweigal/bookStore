@@ -1,44 +1,28 @@
 const router = require('koa-router')();
 const userModel = require('../lib/mysql');
-const footers = require('../json/footers').default;
-const tabList = require('../json/tabList').default;
-const images = require('../json/images').default;
+const labels = require('../json/labels');
+const footers = require('../json/footers');
+const tabList = require('../json/tabList');
+const images = require('../json/images');
 import {switchNav} from '../utils/common'
 router.get('/', async(ctx, next)=>{
-    let types;
-    if(!ctx.request.querystring){
-        types = 'all';
-    }else{
-             
+    let bookList;
+    await userModel.selectBookType().then(result=>{
+        bookList=result
+    })
+    for(let i in bookList){
+        const data=bookList[i]
+        await userModel.selectBookListById([data.Id,data.Id]).then(result=>{
+            bookList[i].Data=result
+        })
     }
-   
     await ctx.render('home', {
-        session: ctx.session,
         navArray: switchNav(),
         footers:footers,
-        labels:[
-            {
-                name:'文艺',
-                router:'hotGoods'
-            },
-            {
-                name:'小说',
-                router:'hotGoods'
-            },
-            {
-                name:'教育',
-                router:'hotGoods'
-            },
-            {
-                name:'童书',
-                router:'hotGoods'
-            }
-        ],
+        labels:labels,
         tabList:tabList,
         images:images,
-        type: null,
-        postsLength: 0,
-        postsPageLength: 0
+        bookList:bookList
     })
 })
 
@@ -182,6 +166,9 @@ router.get('/about',async(ctx,next)=>{
         session:ctx.session,
         navArray: switchNav(ctx.path)
     })
+})
+router.get('/test',async(ctx,next)=>{
+    await ctx.render('test')
 })
 
 module.exports = router;
