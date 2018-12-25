@@ -2,8 +2,6 @@ const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const labels = require('../json/labels');
 const footers = require('../json/footers');
-const tabList = require('../json/tabList');
-const images = require('../json/images');
 import {switchNav} from '../utils/common'
 // 获取相应标签的图书列表
 async function getList(data,Id){
@@ -16,6 +14,9 @@ async function getList(data,Id){
 router.get('/', async(ctx, next)=>{
     let type=null
     let bookList=[];
+    let images=[];
+    let ranks=[]
+    // 图书类型
     await userModel.selectBookType().then(result=>{
         if(result){
             if(type==null){
@@ -24,13 +25,50 @@ router.get('/', async(ctx, next)=>{
             bookList=result
         }
     })
+    // 轮播图
+    await userModel.findAllCarousel().then(result=>{
+        if(result){
+            images=result
+        }
+    })
+    // 年月日排行 "id":"week","name":"周",
+    await userModel.selectYearRank().then(result=>{
+        if(result){
+            const json={
+                "id":"year",
+                "name":"年",
+                "list":result
+            }
+            ranks.push(json)
+        }
+    })
+    await userModel.selectMonthRank().then(result=>{
+        if(result){
+            const json={
+                "id":"month",
+                "name":"月",
+                "list":result
+            }
+            ranks.push(json)
+        }
+    })
+    await userModel.selectWeekRank().then(result=>{
+        if(result){
+            const json={
+                "id":"week",
+                "name":"周",
+                "list":result
+            }
+            ranks.push(json)
+        }
+    })
     const data=bookList[0]
     await getList(data,data.Id);
     await ctx.render('home', {
         navArray: switchNav(),
         footers:footers,
         labels:labels,
-        tabList:tabList,
+        tabList:ranks,
         images:images,
         bookList:bookList,
         type:type
