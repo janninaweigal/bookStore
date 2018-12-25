@@ -5,52 +5,49 @@ const footers = require('../json/footers');
 const tabList = require('../json/tabList');
 const images = require('../json/images');
 import {switchNav} from '../utils/common'
-router.get('/', async(ctx, next)=>{
-    let bookList;
-    await userModel.selectBookType().then(result=>{
-        bookList=result
+// 获取相应标签的图书列表
+async function getList(data,Id){
+    await userModel.selectBookListById([Id,Id]).then(result=>{
+        if(result){
+            data.Data=result
+        }
     })
-    for(let i in bookList){
-        const data=bookList[i]
-        await userModel.selectBookListById([data.Id,data.Id]).then(result=>{
-            bookList[i].Data=result
-        })
-    }
+}
+router.get('/', async(ctx, next)=>{
+    let type=null
+    let bookList=[];
+    await userModel.selectBookType().then(result=>{
+        if(result){
+            if(type==null){
+                type=result[0].Id
+            }
+            bookList=result
+        }
+    })
+    const data=bookList[0]
+    await getList(data,data.Id);
     await ctx.render('home', {
         navArray: switchNav(),
         footers:footers,
         labels:labels,
         tabList:tabList,
         images:images,
-        bookList:bookList
+        bookList:bookList,
+        type:type
     })
 })
 
-// 首页分页，每次输出10条
-router.post('/articles/page', async(ctx, next) => {
-    let page = ctx.request.body.page,
+// 首页tab
+router.post('/home', async(ctx, next) => {
+    let data={flag:false},
         type = ctx.request.querystring.split('=')[1];
-    console.log(type)
-    if(type=='all'){
-        await userModel.findPostByPage(page)
-        .then(result=>{
-            //console.log(result)
-            ctx.body = result   
-        }).catch(()=>{
-        ctx.body = false;
-    })  
-    }else{
-        let _sql = `select * from posts where type = "${type}" limit ${(page-1)*10},10`;
-        await userModel.query(_sql)
-            .then(result=>{
-                ctx.body = result;
-            }).catch(err=>{
-                console.log(err);
-                ctx.body = false;
-            })
+    if(type){
+        await getList(data,type);
+        data.flag=true;
     }
+    ctx.body = data;
   
-    })
+})
 
 // 单篇文章页
 router.get('/articledetail/:postId', async(ctx, next) => {

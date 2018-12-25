@@ -49,6 +49,13 @@ ul.navbar-nav li:hover span{
 .carousel-caption h4 {
     color:#337ab7;
 }
+/* 图书列表 */
+.bookList .thumbnail img{
+    width: 150px;
+    height: 150px;
+    display: block;
+}
+.bookList .page-header a:hover{text-decoration: none}
 /*页脚*/
 .footer{
     padding: 40px 20px;
