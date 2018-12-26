@@ -4,7 +4,7 @@ router.get('/signout', async(ctx, next) => {
     ctx.session = null;
     console.log('退出成功');
     ctx.body = true;
-    ctx.redirect('/home');
+    ctx.redirect('/');
     //return;
     //ctx.redirect('/home');
 })

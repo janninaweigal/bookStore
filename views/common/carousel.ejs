@@ -2,9 +2,9 @@
     <ol class="carousel-indicators">
         <% images.forEach(function(i,index){ %>
             <% if (index==0) { %>
-                <li data-target="#carousel-example-generic" data-slide-to="<%= i.index %>" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="<%= index %>" class="active"></li>
             <% } else { %>
-                <li data-target="#carousel-example-generic" data-slide-to="<%= i.index %>"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="<%= index %>"></li>
             <% } %>
         <% }) %>
     </ol>
