@@ -176,28 +176,28 @@ router.get('/articledetail/:postId', async(ctx, next) => {
 })
 //热门商品
 router.get('/hotGoods',async(ctx,next)=>{
-    await ctx.render('hotGoods',{
+    await ctx.render('other/hotGoods',{
         session:ctx.session,
         navArray: switchNav(ctx.path)
     })
 })
 //会员专区
 router.get('/memberGoods',async(ctx,next)=>{
-    await ctx.render('memberGoods',{
+    await ctx.render('other/memberGoods',{
         session:ctx.session,
         navArray: switchNav(ctx.path)
     })
 })
 //购物车
 router.get('/shopcarts',async(ctx,next)=>{
-    await ctx.render('shopcarts',{
+    await ctx.render('other/shopcarts',{
         session:ctx.session,
         navArray: switchNav(ctx.path)
     })
 })
 //关于
 router.get('/about',async(ctx,next)=>{
-    await ctx.render('about',{
+    await ctx.render('other/about',{
         session:ctx.session,
         navArray: switchNav(ctx.path)
     })
