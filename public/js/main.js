@@ -17,15 +17,11 @@ $(function () {
     });
     //登录
     $('#login').click(function () {
-        $('#mymodal').modal({
-            show:true
-        });
+        showModalOpen('#mymodal');
     });
     //注册
     $('#register').click(function () {
-        $('#mymodal1').modal({
-            show:true
-        });
+        showModalOpen('#mymodal1');
     });
     //验证变量
     var flag=false;
@@ -89,7 +85,7 @@ $(function () {
     });
     //点击注册按钮
     $('#register1').click(function () {
-    	alert("注册还未开放");
+    	console.log($('#registerForm').serializeArray())
     });
     //密码验证
     $('#upass').keyup(function(){
@@ -99,6 +95,36 @@ $(function () {
     });
     //点击登陆按钮
     $('#login1').click(function () {
-    	alert("登陆还未开放");
+        var username=$('#uname').val();
+        var password=$('#upass').val();
+        if(username&&password){
+            showModalHide('#mymodal');
+            showMyModal('用户登录','恭喜您！'+username+'登陆成功')
+        }else{
+            showMyModal('用户登录','用户名或密码不对')
+        }
     });
+    // 公用方法
+    function showMyModal(title, msg) {
+        showModalOpen('#myModalCommon');
+        $('#myModalLabel').text(title);
+        $('#myModalBody').text(msg);
+        //2秒后消失提示框
+        setTimeout(
+            function () {
+                showModalHide('#myModalCommon');
+            }, 2000
+        );
+    }
+    // 公用开启和关闭
+    function showModalOpen(str){
+        $(str).modal({
+            show:true
+        });
+    }
+    function showModalHide(str){
+        $(str).modal({
+            show:false
+        });
+    }
 });
