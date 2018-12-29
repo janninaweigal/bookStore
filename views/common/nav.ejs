@@ -22,9 +22,22 @@
                 </li>
                 <% }) %>
             </ul>
-            <ul class="nav navbar-nav navbar-right"> 
-                <li><a href="#mymodal1" id="register" onclick="return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li> 
-                <li><a href="#mymodal" id="login" onclick="return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li> 
+            <ul class="nav navbar-nav navbar-right">
+                <% if(session.username){ %>
+                    <li class="dropdown">
+                        <div id="dLabel" data-toggle="dropdown" style="cursor:pointer;">
+                            <img src="<%= session.avatar|| 'images/default.jpg' %>" width="50px" height="50px" style="border-radius:50%"/>
+                            <span class="caret"></span>
+                        </div>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li><a href="/personal">个人资料</a></li>
+                            <li><a href="/exit">退出</a></li>
+                        </ul>
+                    </li>
+                <% } else { %>
+                    <li><a href="#mymodal1" id="register" onclick="return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li> 
+                    <li><a href="#mymodal" id="login" onclick="return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li> 
+                <% } %>
             </ul> 
         </div>
     </div>

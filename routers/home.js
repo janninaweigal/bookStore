@@ -64,7 +64,16 @@ router.get('/', async(ctx, next)=>{
     })
     const data=bookList[0]
     await getList(data,data.Id);
+    // 判断是否登陆注册
+    if(ctx.session.user){
+        await userModel.findUserByName(ctx.session.user).then(res=>{
+            ctx.session.id = res[0].Id;
+            ctx.session.username=res[0].Username;
+            ctx.session.avator = res[0].Avatar;
+        })
+    }
     await ctx.render('home', {
+        session: ctx.session,
         navArray: switchNav(),
         footers:footers,
         labels:labels,
