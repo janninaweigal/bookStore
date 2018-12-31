@@ -2,7 +2,6 @@ const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const labels = require('../json/labels');
 const footers = require('../json/footers');
-let collection =[]// 收藏
 let contentList=[]// 热门和会员图书
 import {switchNav} from '../utils/common'
 // 获取相应标签的所有图书列表
@@ -13,15 +12,7 @@ async function getList(data,Id){
         }
     })
 }
-// 合集
-async function getCollections(){
-    await userModel.selectCollection().then(res=>{
-        collection=res
-    }).catch(()=>{
-        collection =[]
-    })
-}
-// 合集
+// 查找对应的商品
 async function getGoodList(IsHot,IsMember){
     await userModel.getGoodList(IsHot,IsMember).then(res=>{
         contentList=res
@@ -162,9 +153,51 @@ router.post('/comment', async(ctx, next) => {
     }
     ctx.body = result;
 })
+// 加入购物车
+router.post('/addShopCarts', async(ctx, next) => {
+    const result={
+        code:'no-login'
+    }
+    if(ctx.session.username){
+        const params=ctx.request.body
+        const userId=ctx.session.id
+        const bookId=params.bookId
+        const quantity=params.quantity
+        const totalPrice=params.totalPrice
+        // 是否已经收藏了商品
+        await userModel.isAddShopcart([bookId,userId]).then(res=>{
+            if(res.length==0){
+                result.code='success'
+            }else{
+                result.Id=res[0].Id
+                result.code='has-shopcart'
+            }
+        }).catch((res)=>{
+            console.log(res)
+            result.code="error"
+        })
+        if(result.code=='success'){
+            // 添加到购物车 BookId,Quantity,TotalPrice
+            await userModel.insertShopcarts([bookId,userId,quantity,totalPrice]).then(res=>{
+                result.code='success'
+            }).catch((res)=>{
+                result.code="error"
+            })
+        }
+        if(result.code=='has-shopcart'){
+            // 更新到购物车 BookId,Quantity,TotalPrice
+            await userModel.updateShopcarts([bookId,userId,quantity,totalPrice,result.Id]).then(res=>{
+                result.code='success'
+            }).catch((res)=>{
+                result.code="error"
+            })
+        }
+    }
+    
+    ctx.body = result;
+})
 //热门商品
 router.get('/hotGoods',async(ctx,next)=>{
-    await getCollections();
     await getGoodList(1,undefined);// 查找热门商品
     await ctx.render('other/hotGoods',{
         contentList:contentList,
@@ -176,7 +209,6 @@ router.get('/hotGoods',async(ctx,next)=>{
 })
 //会员专区
 router.get('/memberGoods',async(ctx,next)=>{
-    await getCollections();
     await getGoodList(undefined,1);// 查找会员商品
     await ctx.render('other/memberGoods',{
         contentList:contentList,
@@ -191,16 +223,16 @@ router.get('/shopcarts',async(ctx,next)=>{
     const shopcarts=[]
     // 判断是否登陆注册
     if(ctx.session.username){
-        await userModel.selectShopcarts(BookId).then(res=>{
+        const userId=ctx.session.id
+        await userModel.selectShopcarts(userId).then(res=>{
             shopcarts=res
         }).catch(()=>{})
     }
-    
     await ctx.render('other/shopcarts',{
-        collection:collection,
         session:ctx.session,
         shopcarts:shopcarts,
         navArray: switchNav(ctx.path),
+        labels:labels,
         footers:footers
     })
 })

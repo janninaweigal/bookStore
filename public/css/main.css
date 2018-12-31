@@ -11,6 +11,7 @@ h1, h2, h3, h4, h5, h6 {
     -moz-transform: translateY(-5px);
     transform: translateY(-5px);
 }
+.margin-top-50{margin-top:50px;}
 .margin-top-15{margin-top:15px;}
 .shadow-frame{
     margin-bottom: 15px;

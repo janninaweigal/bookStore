@@ -1,0 +1,42 @@
+<% if (shopcarts.length!=0) { %>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                <th>#</th>
+                <th>商品图片</th>
+                <th>商品名称</th>
+                <th>单价</th>
+                <th>数量</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% shopcarts.forEach(function(item,index){ %>
+                    <tr>
+                        <th scope="row"><%= index+1 %></th>
+                        <td>
+                            <img src="<%= item.BookPhoto %>" style="width:40px;height:40px;"/> 
+                        </td>
+                        <td><%= item.Name %></td>
+                        <td><%= item.Price %></td>
+                        <td>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                    <input type="number" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
+                                    <button type="button" class="btn btn-default reduceQuantity" aria-label="Bold">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+<% } else { %>
+    <p class="lead">购物车没有东西！！ <mark>nothing</mark></p>
+<% } %>

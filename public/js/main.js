@@ -266,27 +266,80 @@ $(function () {
     })
     // 增加
     $(".addQuantity").click(function(){
-        var that=$(this).parent().prev();
         // 输入框的内容
-        var num=that.val();
+        var that=getResult($(this),0)
+        // 默认
+        var num=getResult($(this),1)
         if(num){
-            that.val(parseInt(num)+1);
+            num=parseInt(num)+1
         }else{
-            that.val(1);
+            num=1
         }
+        that.val(num);
+        $('.totalPrice').text(parseFloat($('.Price').text())*num)
     })
     // 减少
     $(".reduceQuantity").click(function(){
         // 输入框的内容
-        var that=$(this).parent().prev();
-        // 输入框的内容
-        var num=that.val();
+        var that=getResult($(this),0)
+        // 默认
+        var num=getResult($(this),1)
         if(num&&num>0){
-            that.val(parseInt(num)-1);
+            num=parseInt(num)-1
         }else{
-            that.val(0);
+            num=0
+        }
+        that.val(num);
+        $('.totalPrice').text(parseFloat($('.Price').text())*num)
+    })
+    // 加入购物车addShopCarts
+    $('.addShopCarts').click(function (){
+        var bookId=getQueryString("id");
+        if(bookId){
+            var quantity=$(this).parent().prevAll().eq(3).find("input[type='number']").val()||0;
+            var totalPrice=$('.totalPrice').text()||0;
+            $.ajax({
+                url: "/addShopCarts",
+                type: 'POST',
+                data:{
+                    bookId,
+                    quantity,
+                    totalPrice
+                },
+                cache: false,
+                success: function (res) {
+                    if(res.code=="success"){
+                        showTips('用户评论','加入购物车成功')
+                    }else{
+                        showTips('用户评论','加入购物车失败')
+                    }
+                },
+                fail: function () {
+                    showTips('购物车','加入购物车失败')
+                }
+            })
+        }else{
+            showTips('购物车','地址栏参数错误')
         }
     })
+    // 增加和减少的通用方法
+    function getResult(that,flag){
+        // 输入框的内容
+        var el=that.parent();
+        // 判断是在购物车页面还是商品详情页面
+        if(el.hasClass("form-group")){
+            el=el.find('.form-control');
+        }else{
+            el=el.prev()
+        }
+
+        if(flag==0){
+            return el;
+        }else{
+            var num=el.val();
+            return num;
+        }
+    }
     // 按钮置灰
     function addDisabled(el) {
         $(el).attr("disabled",'disabled');
