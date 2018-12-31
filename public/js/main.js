@@ -98,7 +98,7 @@ $(function () {
         var email=$('#email').val();
     	if(username&&password&&email){
             if(password!=passConfirm){
-                showTips('#myModalCommon','用户注册','密码和确认密码不一致！！')
+                showTips('用户注册','密码和确认密码不一致！！')
                 return;
             }
             $.ajax({
@@ -115,10 +115,10 @@ $(function () {
                         showModalHide('#registerModal');
                         location.replace(location)
                     }
-                    showTips('#myModalCommon','用户注册',res.msg)
+                    showTips('用户注册',res.msg)
                 },
                 fail: function (res) {
-                    showTips('#myModalCommon','用户注册',res.msg)
+                    showTips('用户注册',res.msg)
                 }
             })
         }else{
@@ -151,18 +151,54 @@ $(function () {
                         showModalHide('#loginModal');
                         location.replace(location)
                     }
-                    showTips('#myModalCommon','用户登录',res.msg)
+                    showTips('用户登录',res.msg)
                 },
                 fail: function (res) {
-                    showTips('#myModalCommon','用户登录',res.msg)
+                    showTips('用户登录',res.msg)
                 }
             })
         }else{
-            showTips('#myModalCommon','用户登录','请填写好信息！！')
+            showTips('用户登录','请填写好信息！！')
         }
     });
+    $('.bookList .bookTypeLink').click(function(){
+        var that=$(this);
+        var id=that.attr('data-id');
+        $.ajax({
+            url: "/home?type="+id,
+            type: 'POST',
+            cache: false,
+            success: function (res) {
+                if(res.flag){
+                    var data=res.Data
+                    if(data){
+                        var str=''
+                        for(var i=0;i<data.length;i++){
+                            var itemSelf=data[i]
+                            str+=`<div class="col-sm-6 col-md-3">
+                                <div class="thumbnail">
+                                    <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
+                                    <div class="caption">
+                                        <p>单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
+                                        <a href="javascript:void(0)" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
+                                    </div>
+                                </div>
+                            </div>`
+                        }
+                        $('.bookList .bookTypeLink').attr("style","")
+                        that.css("color","red")
+                        $('.bookList .col-sm-6').remove();
+                        $('.bookList').append(str)
+                    }
+                }else{
+                    showTips('tab切换','加载失败')
+                }
+            }
+        })
+    })
     // 公用方法
-    function showTips(el,title, msg) {
+    function showTips(title, msg) {
+        var el='#myModalCommon'
         showModalOpen(el);
         $(el+' .modal-title').text(title);
         $(el+' .modal-body').text(msg);
@@ -173,6 +209,85 @@ $(function () {
             }, 2000
         );
     }
+    // 评论
+    $("#comment .sendComment").click(function(){
+        var that=$(this);
+        // 评论的文字
+        var comment=that.parent().prev().val();
+        if(comment.length==0){
+            showTips('用户评论', '请填写评论哟~')
+        }else{
+            var bookId=getQueryString("id");
+            $.ajax({
+				url: "/comment",
+                type: 'POST',
+                data:{
+                    comment,
+                    bookId
+                },
+				cache: false,
+				success: function (res) {
+                    // code："no-login" 用户没登陆    "success" 成功
+                    if(res.code=="success"){
+                        var data=res.data;
+                        var str=''
+                        for(var i=0;i<data.length;i++){
+                            var item=data[i]
+                            str+=`<div class="media">
+                                <div class="media-left">
+                                    <img class="media-object" alt="${item.Username}" src="images/${item.Avatar}" style="width: 64px; height: 64px;">
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">${item.Username}</h4>
+                                    <p>${item.Content}</p>
+                                    <div class="text-right">发表于：${item.UpdateTime}</div>
+                                </div>
+                            </div>`
+                            if (data.length-1!=i){
+                                str+="<hr/>"
+                            }
+                        }
+                        // 先清空原有数据
+                        that.parent().nextAll().remove();
+                        showTips('用户评论','评论成功~')
+                        // 添加新数据
+                        that.parent().after(str)
+                    }else if(res.code=="no-login"){
+                        showTips('用户评论','请先登录后评论！！')
+                    }else{
+                        showTips('用户评论','评论失败')
+                    }
+                },
+                fail: function () {
+                    showTips('用户评论','评论失败')
+                }
+            })
+        }
+    })
+    // 增加
+    $(".addQuantity").click(function(){
+        var that=$(this).parent().prev();
+        // 输入框的内容
+        var num=that.val();
+        if(num){
+            that.val(parseInt(num)+1);
+        }else{
+            that.val(1);
+        }
+    })
+    // 减少
+    $(".reduceQuantity").click(function(){
+        // 输入框的内容
+        var that=$(this).parent().prev();
+        // 输入框的内容
+        var num=that.val();
+        if(num&&num>0){
+            that.val(parseInt(num)-1);
+        }else{
+            that.val(0);
+        }
+    })
+    // 按钮置灰
     function addDisabled(el) {
         $(el).attr("disabled",'disabled');
     }
@@ -183,4 +298,11 @@ $(function () {
     function showModalHide(str){
         $(str).modal('hide');
     }
+    // 获取地址栏的参数
+    function getQueryString(name) { 
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+        var r = window.location.search.substr(1).match(reg); 
+        if (r != null) return unescape(r[2]); 
+        return null; 
+    } 
 });

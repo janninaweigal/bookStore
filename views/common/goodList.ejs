@@ -1,0 +1,17 @@
+<% if (contentList.length!=0) { %>
+    <div class="row">
+        <% contentList.forEach(function(item,index){ %>
+            <div class="col-sm-3 col-md-3">
+                <div class="thumbnail">
+                    <img src="<%= item.BookPhoto %>" title="<%= item.BookName %>" alt="<%= item.BookName %>" width="100%">
+                    <div class="caption">
+                        <p>单价：<%= item.Price %>&nbsp;&nbsp;&nbsp;数量：<%= item.Quantity %><br/>出版社：<%= item.PublishCompany %><br/>出版时间：<%= item.PublishTime %><br/><%= item.Describe %></p>
+                        <div class="text-right"><a href="/goodsDetail?id=<%= item.Id %>" class="btn btn-primary" role="button">查看详情&nbsp;<span class="glyphicon glyphicon-hand-right"></span></a></div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+<% } else { %>
+    <p class="lead"><mark>没有商品</mark></p>
+<% } %>

@@ -1,0 +1,98 @@
+<% if (goodsDetail.flag) { %>
+    <div class="container" style="margin-bottom:48px">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <img src="<%= goodsDetail.BookPhoto %>" width="100%"/>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <h4><%= goodsDetail.BookName %></h4>
+                <p>
+                    <% if (goodsDetail.IsMember==1) { %>
+                        <span class="label label-danger">会员图书</span>
+                    <% } %>
+                    <% if (goodsDetail.IsHot==1) { %>
+                        <span class="label label-danger">热门图书</span>
+                    <% } %>
+                </p>
+                <p><%= goodsDetail.Describe %></p>
+                <hr/>
+                <p>
+                    作者:<a href="javascript:void(0)"><%= goodsDetail.Author||'无名氏' %></a>&nbsp;&nbsp;
+                    出版社:<a href="javascript:void(0)"><%= goodsDetail.PublishCompany %></a>&nbsp;&nbsp;
+                    出版时间:<%= goodsDetail.PublishTime %>
+                </p>
+                <div class="alert alert-info" role="alert">
+                    图书价格：
+                    <h3 class="text-danger"><span class="glyphicon glyphicon-yen"></span><%= goodsDetail.Price %></h3>
+                </div>
+                <div class="input-group" style="margin:10px 0px 20px 0px">
+                    <input type="text" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                        <button type="button" class="btn btn-default reduceQuantity" aria-label="Bold">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-right">
+                    <button type="button" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-heart-empty" style="top:4px"></span>&nbsp;加入购物车</button>
+                    <button type="button" class="btn btn-danger btn-lg" style="padding-left:40px;padding-right:40px;">购买&nbsp;<span class="glyphicon glyphicon-phone" style="top:2px"></span></button>
+                </p>
+            </div>
+        </div>
+        <div class="row margin-top-15">
+            <div class="col-md-12 col-sm-12">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#detail" aria-controls="home" role="tab" data-toggle="tab">商品详情</a></li>
+                    <li role="presentation"><a href="#comment" aria-controls="profile" role="tab" data-toggle="tab">商品评论</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="detail">
+                        <p class="text-success margin-top-15">所属分类：图书
+                            <% if (goodsDetail.IsMember==1) { %>
+                                > 热门图书
+                            <% } else { %>
+                                > 会员图书
+                            <% } %>
+                        </p>
+                        <p class="lead">国际标准书号ISBN：<%= goodsDetail.Isbn||Math.floor(Math.random()*1000000000000000) %></p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="comment">
+                        <textarea class="form-control margin-top-15" placeholder="说点什么把..." rows="3"></textarea>
+                        <div class="text-right margin-top-15">
+                            <button type="button" class="btn btn-info sendComment">发送</button>
+                        </div>
+                        
+                        <% if (goodsDetail.comments.length!=0) { %>
+                            <% goodsDetail.comments.forEach(function(item,index){ %>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <img class="media-object" alt="<%= item.Username %>" src="images/<%= item.Avatar %>" style="width: 64px; height: 64px;">
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><%= item.Username %></h4>
+                                        <%= item.Content %>
+                                        <div class="text-right">发表于：<%= item.UpdateTime %></div>
+                                    </div>
+                                </div>
+                                <% if (goodsDetail.comments.length-1!=index) { %>
+                                    <hr>
+                                <% } %>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="lead">暂无<mark>评论</mark></p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } else { %>
+    <p class="lead"><mark>没有商品详情</mark></p>
+<% } %>
+

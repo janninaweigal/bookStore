@@ -5,7 +5,7 @@
 export function switchNav(router) {
     const navArray = [
         {
-            name:'热门商品',
+            name:'热门专区',
             active:false,
             router:'/hotGoods'
         },

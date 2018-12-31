@@ -36,43 +36,4 @@
         <% }) %>
     </div>
 </div>
-<script>
-    $(function(){
-        $('.bookList .bookTypeLink').click(function(){
-            var that=$(this);
-            var id=that.attr('data-id');
-            $.ajax({
-				url: "/home?type="+id,
-				type: 'POST',
-				cache: false,
-				success: function (res) {
-                    if(res.flag){
-                        var data=res.Data
-                        if(data){
-                            var str=''
-                            for(var i=0;i<data.length;i++){
-                                var itemSelf=data[i]
-                                str+=`<div class="col-sm-6 col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
-                                        <div class="caption">
-                                            <p>单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
-                                            <a href="javascript:void(0)" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
-                                        </div>
-                                    </div>
-                                </div>`
-                            }
-                            $('.bookList .bookTypeLink').attr("style","")
-                            that.css("color","red")
-                            $('.bookList .col-sm-6').remove();
-                            $('.bookList').append(str)
-                        }
-                    }else{
-                        alert('加载失败')
-                    }
-                }
-            })
-        })
-    })
-</script>
 
