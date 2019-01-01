@@ -1,7 +1,7 @@
 <div>
     <!--tablist start-->
     <ul class="nav nav-tabs" role="tablist">
-        <li class="text-error"><h4>点击排行&nbsp;</h4></li>
+        <li class="text-error"><h4>排行预览&nbsp;&nbsp;</h4></li>
         <% tabList.forEach(function(item,index){ %>
             <% if (index==0) { %>
                 <li class="active">
@@ -23,7 +23,7 @@
             <% } %>
             <div class="list-group">
                 <% tab.list.forEach(function(i,index){ %>
-                    <a href="javascript:void(0)" class="list-group-item" title="<%= i.Name %>">
+                    <a href="/goodsDetail?id=<%= i.Id %>" class="list-group-item" title="<%= i.Name %>">
                         <% if(index ==0) { %>
                             <span class="badge pull-left" style="background-color:#FF858E;">&nbsp;<%= index+1 %>&nbsp;&nbsp;</span>
                         <% } else if(index==1) { %>

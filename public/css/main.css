@@ -4,6 +4,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
     line-height: 20px;
 }
+table tr th,table tr td{ text-align:center;}
 .ellipsisText{overflow: hidden;white-space: nowrap;text-overflow: ellipsis}
 .bck{background: url("../images/bck.png") repeat center center;}
 .bck img:hover{

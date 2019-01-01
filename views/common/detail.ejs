@@ -26,7 +26,7 @@
                     <h3 class="text-danger Price"><span class="glyphicon glyphicon-yen"></span><%= goodsDetail.Price %></h3>
                 </div>
                 <div class="input-group" style="margin:10px 0px 20px 0px">
-                    <input type="number" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
+                    <input onkeyup="this.value=this.value.replace(/[^0-9]+/,'');" onblur="this.value=this.value.replace(/[^0-9]+/,'');" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -61,7 +61,7 @@
                                 > 会员图书
                             <% } %>
                         </p>
-                        <p class="lead">国际标准书号ISBN：<%= goodsDetail.Isbn||Math.floor(Math.random()*1000000000000000) %></p>
+                        <p class="lead">国际标准书号ISBN：<%= goodsDetail.Isbn %></p>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="comment">
                         <textarea class="form-control margin-top-15" placeholder="说点什么把..." rows="3"></textarea>

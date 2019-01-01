@@ -1,17 +1,17 @@
-<% if (shopcarts.length!=0) { %>
-    <div class="row">
+<% if (shopcarts.data.length!=0) { %>
+    <form id="shopcarts">
         <table class="table">
             <thead>
                 <tr>
-                <th>#</th>
-                <th>商品图片</th>
-                <th>商品名称</th>
-                <th>单价</th>
-                <th>数量</th>
+                    <th>#</th>
+                    <th>商品图片</th>
+                    <th>商品名称</th>
+                    <th>单价</th>
+                    <th>数量</th>
                 </tr>
             </thead>
             <tbody>
-                <% shopcarts.forEach(function(item,index){ %>
+                <% shopcarts.data.forEach(function(item,index){ %>
                     <tr>
                         <th scope="row"><%= index+1 %></th>
                         <td>
@@ -25,7 +25,7 @@
                                     <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </button>
-                                    <input type="number" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
+                                    <input onkeyup="this.value=this.value.replace(/[^0-9]+/,'');" onblur="this.value=this.value.replace(/[^0-9]+/,'');" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
                                     <button type="button" class="btn btn-default reduceQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-minus"></span>
                                     </button>
@@ -34,9 +34,14 @@
                         </td>
                     </tr>
                 <% }) %>
+                <tr>
+                    <td>#</td>
+                    <td colspan="4" class="text-danger" style="font-size:24px;">总价:<span class="glyphicon glyphicon-yen"></span><span class="shopcartTotal"><%= shopcarts.TotalPrice %></span></td>
+                </tr>
             </tbody>
         </table>
-    </div>
+        <p class="text-right"><button type="submit" class="btn btn-danger">去支付&nbsp;<span class="glyphicon glyphicon-random"></span></button></p>
+    </form>
 <% } else { %>
     <p class="lead">购物车没有东西！！ <mark>nothing</mark></p>
 <% } %>

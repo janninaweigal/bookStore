@@ -264,6 +264,21 @@ $(function () {
             })
         }
     })
+    $("#shopcarts .table input[type='number']").bind("input propertychange",function(target){
+        getTotalPrice()
+    });
+    
+    // 购物车的总和
+    function getTotalPrice(){
+        var that=$('#shopcarts .table tbody tr')
+        var sum=0;
+        for(var i=0;i<that.length-1;i++){
+            var price=parseFloat(that.eq(i).children().eq(3).text());
+            var quantity=parseInt(that.eq(i).children().eq(4).find('input').val())||0;
+            sum+=(price*quantity)
+        }
+        $('.shopcartTotal').text(sum)
+    }
     // 增加
     $(".addQuantity").click(function(){
         // 输入框的内容
@@ -277,6 +292,7 @@ $(function () {
         }
         that.val(num);
         $('.totalPrice').text(parseFloat($('.Price').text())*num)
+        getTotalPrice()
     })
     // 减少
     $(".reduceQuantity").click(function(){
@@ -291,6 +307,7 @@ $(function () {
         }
         that.val(num);
         $('.totalPrice').text(parseFloat($('.Price').text())*num)
+        getTotalPrice()
     })
     // 加入购物车addShopCarts
     $('.addShopCarts').click(function (){
@@ -344,6 +361,37 @@ $(function () {
     function addDisabled(el) {
         $(el).attr("disabled",'disabled');
     }
+    // 上一页
+    $('.pagePrevious').click(function(){
+        pageCommon($(this),true)
+    })
+    // 下一页
+    $('.pageNext').click(function(){
+        pageCommon($(this),false)
+    })
+    // 上下页
+    function pageCommon(that,flag){
+        if(!that.parent().hasClass("disabled")){
+            var obj=that.parent().siblings('li.active').attr('data-id').split(',')
+            var pageNo=flag?obj[1]-1:obj[1]+1
+            var url=['/search?id=',obj[0],'&pageNo=',pageNo].join('')
+            window.location.href=url
+        }
+    }
+    // 搜索的下拉框
+    $('.searchName').click(function(){
+        $(this).parent().parent().prev('.dropdown-toggle').text($(this).text())
+    })
+    // 搜索按钮
+    $('.searchResult').click(function(){
+        var searchName=$(this).prev('.form-group').find('.form-control').val()
+        if(searchName){
+            var flag=$(this).prev('.form-group').find('.dropdown-toggle').text()=='所有消息'
+            console.log($(this).prev('.form-group').find('.dropdown-toggle').text())
+            var typeId=flag?-1:$(".searchName").attr('data-typeId')
+            window.location.href=['/search?id=',typeId,'&searchName=',encodeURI(searchName)].join('')
+        }
+    })
     // 公用开启和关闭
     function showModalOpen(str){
         $(str).modal('show');
