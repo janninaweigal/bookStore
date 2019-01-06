@@ -1,8 +1,8 @@
 const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const footers = require('../json/footers');
-let contentList=[]// 热门和会员图书
 import {switchNav} from '../utils/common'
+let labels=[]
 // 获取相应标签的所有图书列表
 async function getList(data,Id){
     await userModel.selectBooksByTypeId(Id).then(res=>{
@@ -11,26 +11,15 @@ async function getList(data,Id){
         }
     })
 }
-// 查找对应的商品
-async function getGoodList(IsHot,IsMember){
-    await userModel.getGoodList(IsHot,IsMember).then(res=>{
-        contentList=res
-    }).catch(()=>{
-        contentList =[]
-    })
-}
 // 标签组
 async function getLabels(){
-    let labels=[]
     await userModel.selectBookType().then(result=>{
         labels= result
     }).catch(()=>{})
-    return labels
 }
 router.get('/', async(ctx, next)=>{
     let type=null
     let bookList=[];
-    const labels=await getLabels();
     let images=[];
     let ranks=[]
     // 图书类型
@@ -48,6 +37,7 @@ router.get('/', async(ctx, next)=>{
             images=result
         }
     })
+    await getLabels();
     // 年月日排行 "id":"week","name":"周",
     await userModel.selectYearRank().then(result=>{
         if(result){
@@ -99,54 +89,11 @@ router.get('/', async(ctx, next)=>{
         type:type
     })
 })
-// 商品搜索
-router.get('/search',async(ctx,next)=>{
-    const querystring=ctx.request.querystring
-    let BookTypeId
-    let pageNo=0 // 默认第一页
-    let searchName=''
-    let search={Data:[],count:0}// 商品详情
-    const pageSize=8// 默认加载8条
-    if(querystring.indexOf('&')!=-1){
-        const splitArray=querystring.split('&')
-        const param=splitArray[1].split('=')[1]
-        BookTypeId=splitArray[0].split('=')[1]
-        if(splitArray[1].split('=')[0]=='searchName'){
-            searchName=decodeURI(param)
-        }else{
-            pageNo=param
-        }
-    }else{
-        BookTypeId=querystring.split('=')[1];
-    }
-    
-    const labels=await getLabels();
-    
-    if(BookTypeId){
-        await userModel.selectBooksPageByTypeId(BookTypeId,pageNo,pageSize,searchName).then(res=>{
-            if(res){
-                search.Data=res
-            }
-        })
-        await userModel.selectBooksCountByTypeId(BookTypeId,searchName).then(res=>{
-            search.count=Math.ceil(res[0].count/pageSize)
-        })
-    }
-    search.pageNo=pageNo
-    search.typeId=BookTypeId
-    await ctx.render('other/search',{
-        session:ctx.session,
-        navArray: switchNav(ctx.path),
-        search:search,
-        labels:labels,
-        footers:footers
-    })
-})
 // 商品详情
 router.get('/goodsDetail',async(ctx,next)=>{
     const BookId=ctx.request.querystring.split('=')[1];
-    const labels=await getLabels();
     let goodsDetail={flag:false}// 商品详情和评论
+    await getLabels();
     if(BookId){
         await userModel.selectBookById(BookId).then(res=>{
             goodsDetail=res[0];
@@ -249,10 +196,12 @@ router.post('/addShopCarts', async(ctx, next) => {
 })
 //热门商品
 router.get('/hotGoods',async(ctx,next)=>{
-    const labels=await getLabels();
-    await getGoodList(1,undefined);// 查找热门商品
+    const querystring=ctx.request.query
+    let goods={Data:[],count:0,pageNo:0,pageSize:8,searchName:'hotGoods'}// 商品详情 // 默认第一页
+    await commonFunc(querystring,goods,1,undefined)
+    await getLabels();
     await ctx.render('other/hotGoods',{
-        contentList:contentList,
+        goods:goods,
         session:ctx.session,
         navArray: switchNav(ctx.path),
         labels:labels,
@@ -261,12 +210,65 @@ router.get('/hotGoods',async(ctx,next)=>{
 })
 //会员专区
 router.get('/memberGoods',async(ctx,next)=>{
-    const labels=await getLabels();
-    await getGoodList(undefined,1);// 查找会员商品
+    const querystring=ctx.request.querystring
+    // 查找会员商品
+    let goods={Data:[],count:0,pageNo:0,pageSize:8,searchName:'memberGoods'}// 商品详情 // 默认第一页
+    await commonFunc(querystring,goods,undefined,1)
+    await getLabels();
     await ctx.render('other/memberGoods',{
-        contentList:contentList,
+        goods:goods,
         session:ctx.session,
         navArray: switchNav(ctx.path),
+        labels:labels,
+        footers:footers
+    })
+})
+// 会员和热门的公共方法
+async function commonFunc(querystring,goods,isHot,isMember){
+    await getLabels();
+    if(querystring.pageNo){
+        goods.pageNo=parseInt(querystring.pageNo)
+    }
+    // 查找热门商品长度
+    await userModel.getGoodListLength(isHot,isMember).then(res=>{
+        goods.count=Math.ceil(res[0].count/goods.pageSize)
+        if(goods.pageNo<=0)goods.pageNo=0
+        else if(goods.pageNo>=goods.count)goods.pageNo=goods.count-1
+    }).catch(()=>{})
+    const startNo=goods.pageNo*goods.pageSize
+    // 查找热门商品
+    await userModel.getGoodList(isHot,isMember,startNo,goods.pageSize).then(res=>{
+        goods.Data=res
+    }).catch(()=>{})
+}
+// 商品搜索
+router.get('/search',async(ctx,next)=>{
+    const querystring=ctx.request.query
+    const pageNo=querystring.pageNo?parseInt(querystring.pageNo):0
+    let typeId=querystring.typeId?querystring.typeId:-1
+    let searchName=querystring.searchName?decodeURI(querystring.searchName):''
+    let search={Data:[],typeId:typeId,count:0,pageNo:pageNo,pageSize:8,searchName:'search'}// 商品详情
+    
+    await getLabels();
+
+    // 搜索结果的长度
+    await userModel.selectBooksCountByTypeId(typeId,searchName).then(res=>{
+        search.count=Math.ceil(res[0].count/search.pageSize)
+        if(search.pageNo<=0)search.pageNo=0
+        else if(search.pageNo>=search.count)search.pageNo=search.count-1
+    })
+    const No=search.pageNo*search.pageSize
+    // 搜索结果的长度
+    await userModel.selectBooksPageByTypeId(typeId,No,search.pageSize,searchName).then(res=>{
+        if(res){
+            search.Data=res
+        }
+    })
+    
+    await ctx.render('other/search',{
+        session:ctx.session,
+        navArray: switchNav(ctx.path),
+        goods:search,
         labels:labels,
         footers:footers
     })
@@ -274,7 +276,7 @@ router.get('/memberGoods',async(ctx,next)=>{
 //购物车
 router.get('/shopcarts',async(ctx,next)=>{
     let shopcarts={data:[]}
-    const labels=await getLabels();
+    await getLabels();
     // 判断是否登陆注册
     if(ctx.session.username){
         const userId=ctx.session.id

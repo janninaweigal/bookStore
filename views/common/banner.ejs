@@ -7,7 +7,7 @@
                     <span class="label label-danger">热门标签：</span>
                     <% labels.forEach(function(label,index){ %>
                         <% if (index<=4) { %>
-                            <a href="/search?Id=<%= label.Id %>" title="<%= label.Name %>" class="badge badge-info"><%= label.Name %></a>
+                            <a href="/search?typeId=<%= label.Id %>" title="<%= label.Name %>" class="badge badge-info"><%= label.Name %></a>
                         <% } %>
                     <% }) %>
                 </div>
@@ -15,15 +15,24 @@
                     <div class="form-group">
                         <input class="form-control" placeholder="请输入关键词" type="text" maxlength="50" autocomplete="off"/>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">所有消息<span class="caret"></span></button>
+                            <% if (goods.typeId==-1) { %>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">所有消息&nbsp;<span class="caret"></span></button>
+                            <% }else{ %>
+                                <% labels.forEach(function(item,index){ %>
+                                    <% if (item.Id==goods.typeId) { %>
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><%= item.Name %>&nbsp;<span class="caret"></span></button>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
                             <ul class="dropdown-menu">
+                                <li><a href="javascript:void(0)" class="searchName" data-typeId="-1">所有消息</a></li>
                                 <% labels.forEach(function(label){ %>
                                     <li><a href="javascript:void(0)" class="searchName" data-typeId="<%= label.Id %>"><%= label.Name %></a></li>
                                 <% }) %>
                             </ul>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary searchResult">搜索</button>
+                    <button type="button" class="btn btn-danger searchResult" data-typeId="<%= goods.typeId %>">搜索</button>
                 </form>
             </div>
         </div>

@@ -180,7 +180,7 @@ $(function () {
                                     <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
                                     <div class="caption">
                                         <p>单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
-                                        <a href="javascript:void(0)" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
+                                        <a href="/goodsDetail?id=${itemSelf.Id}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
                                     </div>
                                 </div>
                             </div>`
@@ -326,13 +326,13 @@ $(function () {
                 cache: false,
                 success: function (res) {
                     if(res.code=="success"){
-                        showTips('用户评论','加入购物车成功')
+                        showTips('购物车','加入购物车成功')
                     }else{
-                        showTips('用户评论','加入购物车失败')
+                        showTips('购物车','请先登录！')
                     }
                 },
                 fail: function () {
-                    showTips('购物车','加入购物车失败')
+                    showTips('购物车','请先登录！')
                 }
             })
         }else{
@@ -357,40 +357,16 @@ $(function () {
             return num;
         }
     }
-    // 按钮置灰
-    function addDisabled(el) {
-        $(el).attr("disabled",'disabled');
-    }
-    // 上一页
-    $('.pagePrevious').click(function(){
-        pageCommon($(this),true)
-    })
-    // 下一页
-    $('.pageNext').click(function(){
-        pageCommon($(this),false)
-    })
-    // 上下页
-    function pageCommon(that,flag){
-        if(!that.parent().hasClass("disabled")){
-            var obj=that.parent().siblings('li.active').attr('data-id').split(',')
-            var pageNo=flag?obj[1]-1:obj[1]+1
-            var url=['/search?id=',obj[0],'&pageNo=',pageNo].join('')
-            window.location.href=url
-        }
-    }
     // 搜索的下拉框
     $('.searchName').click(function(){
-        $(this).parent().parent().prev('.dropdown-toggle').text($(this).text())
+        $(this).parent().parent().prev('.dropdown-toggle').html($(this).text()+'&nbsp;<span class="caret"></span>')
+        $('.searchResult').attr('data-typeId',$(this).attr('data-typeId'))
     })
     // 搜索按钮
     $('.searchResult').click(function(){
         var searchName=$(this).prev('.form-group').find('.form-control').val()
-        if(searchName){
-            var flag=$(this).prev('.form-group').find('.dropdown-toggle').text()=='所有消息'
-            console.log($(this).prev('.form-group').find('.dropdown-toggle').text())
-            var typeId=flag?-1:$(".searchName").attr('data-typeId')
-            window.location.href=['/search?id=',typeId,'&searchName=',encodeURI(searchName)].join('')
-        }
+        var typeId=$(this).attr('data-typeId')
+        window.location.href=['/search?typeId=',typeId,'&searchName=',encodeURI(searchName)].join('')
     })
     // 公用开启和关闭
     function showModalOpen(str){

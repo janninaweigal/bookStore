@@ -1,17 +1,49 @@
-<% if (contentList.length!=0) { %>
+<% if (goods.Data.length!=0) { %>
     <div class="row">
-        <% contentList.forEach(function(item,index){ %>
+        <% goods.Data.forEach(function(item,index){ %>
             <div class="col-sm-3 col-md-3">
                 <div class="thumbnail">
                     <img src="<%= item.BookPhoto %>" title="<%= item.BookName %>" alt="<%= item.BookName %>" width="100%">
                     <div class="caption">
-                        <p>单价：<%= item.Price %>&nbsp;&nbsp;&nbsp;数量：<%= item.Quantity %><br/>出版社：<%= item.PublishCompany %><br/>出版时间：<%= item.PublishTime %><br/><%= item.Describe %></p>
+                        <p>图书名称：<a href="/goodsDetail?id=<%= item.Id %>" title="<%= item.BookName %>"><%= item.BookName.length>7?item.BookName.substring(0,7)+'...':item.BookName %></a><br/><%- item.Name?"图书类型：<span class='text-danger'>"+item.Name+"</span><br/>":'' -%>单价：<%= item.Price %>&nbsp;&nbsp;&nbsp;数量：<%= item.Quantity %><br/>出版社：<%= item.PublishCompany %><br/>出版时间：<%= item.PublishTime %><br/><%= item.Describe %></p>
                         <div class="text-right"><a href="/goodsDetail?id=<%= item.Id %>" class="btn btn-primary" role="button">查看详情&nbsp;<span class="glyphicon glyphicon-hand-right"></span></a></div>
                     </div>
                 </div>
             </div>
         <% }) %>
     </div>
+    <% if (goods.count>1) { %>
+        <nav class="text-center">
+            <ul class="pagination">
+                <% if (goods.pageNo==0) { %>
+                    <li class="disabled">
+                <% }else{ %>
+                    <li>
+                <% } %>
+                    <a href="<%= goods.pageNo==0?'javascript:void(0)':'/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)-1)%>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <% for(var i=0;i<goods.count;i++){ %>
+                    <% if (i==goods.pageNo) { %>
+                        <li class="active">
+                    <% }else{ %>
+                        <li>
+                    <% } %>
+                    <a href="<%= '/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+ i %>"><%= i+1 %></a></li>
+                <% } %>
+                <% if (goods.pageNo==(goods.count-1)) { %>
+                    <li class="disabled">
+                <% }else{ %>
+                    <li>
+                <% } %>
+                    <a href="<%= goods.pageNo==(goods.count-1)?'javascript:void(0)':'/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)+1)%>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    <% } %>
 <% } else { %>
     <p class="lead"><mark>没有商品</mark></p>
 <% } %>
