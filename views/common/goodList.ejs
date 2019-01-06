@@ -5,8 +5,8 @@
                 <div class="thumbnail">
                     <img src="<%= item.BookPhoto %>" title="<%= item.BookName %>" alt="<%= item.BookName %>" width="100%">
                     <div class="caption">
-                        <p>图书名称：<a href="/goodsDetail?id=<%= item.Id %>" title="<%= item.BookName %>"><%= item.BookName.length>7?item.BookName.substring(0,7)+'...':item.BookName %></a><br/><%- item.Name?"图书类型：<span class='text-danger'>"+item.Name+"</span><br/>":'' -%>单价：<%= item.Price %>&nbsp;&nbsp;&nbsp;数量：<%= item.Quantity %><br/>出版社：<%= item.PublishCompany %><br/>出版时间：<%= item.PublishTime %><br/><%= item.Describe %></p>
-                        <div class="text-right"><a href="/goodsDetail?id=<%= item.Id %>" class="btn btn-primary" role="button">查看详情&nbsp;<span class="glyphicon glyphicon-hand-right"></span></a></div>
+                        <p>图书名称：<a href="/goodsDetail?id=<%= item.BookId %>" title="<%= item.BookName %>"><%= item.BookName.length>7?item.BookName.substring(0,7)+'...':item.BookName %></a><br/><%- item.Name?"图书类型：<span class='text-danger'>"+item.Name+"</span><br/>":'' -%>单价：<%= item.Price %>&nbsp;&nbsp;&nbsp;数量：<%= item.Quantity %><br/>出版社：<%= item.PublishCompany %><br/>出版时间：<%= item.PublishTime %><br/><%= item.Describe %></p>
+                        <div class="text-right"><a href="/goodsDetail?id=<%= item.BookId %>" class="btn btn-primary" role="button">查看详情&nbsp;<span class="glyphicon glyphicon-hand-right"></span></a></div>
                     </div>
                 </div>
             </div>

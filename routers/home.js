@@ -3,6 +3,8 @@ const userModel = require('../lib/mysql');
 const footers = require('../json/footers');
 import {switchNav} from '../utils/common'
 let labels=[]
+// 查找
+let goods={Data:[],count:0,typeId:-1,pageNo:0,pageSize:8,searchName:'search'}
 // 获取相应标签的所有图书列表
 async function getList(data,Id){
     await userModel.selectBooksByTypeId(Id).then(res=>{
@@ -22,6 +24,8 @@ router.get('/', async(ctx, next)=>{
     let bookList=[];
     let images=[];
     let ranks=[]
+    let typeId=ctx.request.query.typeId?ctx.request.query.typeId:-1
+    goods.typeId=typeId
     // 图书类型
     await userModel.selectBookType().then(result=>{
         if(result){
@@ -85,14 +89,17 @@ router.get('/', async(ctx, next)=>{
         labels:labels,
         tabList:ranks,
         images:images,
+        goods:goods,
         bookList:bookList,
         type:type
     })
 })
 // 商品详情
 router.get('/goodsDetail',async(ctx,next)=>{
-    const BookId=ctx.request.querystring.split('=')[1];
+    const BookId=ctx.request.query.id?ctx.request.query.id:1;
     let goodsDetail={flag:false}// 商品详情和评论
+    let typeId=ctx.request.query.typeId?ctx.request.query.typeId:-1
+    goods.typeId=typeId
     await getLabels();
     if(BookId){
         await userModel.selectBookById(BookId).then(res=>{
@@ -109,6 +116,7 @@ router.get('/goodsDetail',async(ctx,next)=>{
     }
     await ctx.render('other/goodsDetail',{
         session:ctx.session,
+        goods:goods,
         navArray: switchNav(ctx.path),
         goodsDetail:goodsDetail,
         labels:labels,
@@ -118,7 +126,7 @@ router.get('/goodsDetail',async(ctx,next)=>{
 // 首页tab
 router.post('/home', async(ctx, next) => {
     let data={flag:false},
-        type = ctx.request.querystring.split('=')[1];
+        type = ctx.request.query.type?ctx.request.query.type:1
     if(type){
         await getList(data,type);
         data.flag=true;
@@ -197,7 +205,8 @@ router.post('/addShopCarts', async(ctx, next) => {
 //热门商品
 router.get('/hotGoods',async(ctx,next)=>{
     const querystring=ctx.request.query
-    let goods={Data:[],count:0,pageNo:0,pageSize:8,searchName:'hotGoods'}// 商品详情 // 默认第一页
+    let typeId=querystring.typeId?querystring.typeId:-1
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'hotGoods'}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,1,undefined)
     await getLabels();
     await ctx.render('other/hotGoods',{
@@ -210,9 +219,10 @@ router.get('/hotGoods',async(ctx,next)=>{
 })
 //会员专区
 router.get('/memberGoods',async(ctx,next)=>{
-    const querystring=ctx.request.querystring
+    const querystring=ctx.request.query
+    let typeId=querystring.typeId?querystring.typeId:-1
     // 查找会员商品
-    let goods={Data:[],count:0,pageNo:0,pageSize:8,searchName:'memberGoods'}// 商品详情 // 默认第一页
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'memberGoods'}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,undefined,1)
     await getLabels();
     await ctx.render('other/memberGoods',{
@@ -276,6 +286,9 @@ router.get('/search',async(ctx,next)=>{
 //购物车
 router.get('/shopcarts',async(ctx,next)=>{
     let shopcarts={data:[]}
+    let typeId=ctx.request.query.typeId?querystring.typeId:-1
+    // 查找
+    let goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'search'}
     await getLabels();
     // 判断是否登陆注册
     if(ctx.session.username){
@@ -294,6 +307,7 @@ router.get('/shopcarts',async(ctx,next)=>{
     await ctx.render('other/shopcarts',{
         session:ctx.session,
         shopcarts:shopcarts,
+        goods:goods,
         navArray: switchNav(ctx.path),
         labels:labels,
         footers:footers

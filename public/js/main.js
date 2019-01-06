@@ -179,7 +179,7 @@ $(function () {
                                 <div class="thumbnail">
                                     <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
                                     <div class="caption">
-                                        <p>单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
+                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.Id}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
                                         <a href="/goodsDetail?id=${itemSelf.Id}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
                                     </div>
                                 </div>
