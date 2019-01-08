@@ -8,6 +8,7 @@
                     <th>商品名称</th>
                     <th>单价</th>
                     <th>数量</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +18,7 @@
                         <td>
                             <img src="<%= item.BookPhoto %>" style="width:40px;height:40px;"/> 
                         </td>
-                        <td><%= item.Name %></td>
+                        <td width="150"><%= item.Name %></td>
                         <td><%= item.Price %></td>
                         <td>
                             <div class="form-inline">
@@ -25,18 +26,22 @@
                                     <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </button>
-                                    <input onkeyup="this.value=this.value.replace(/[^0-9]+/,'');" onblur="this.value=this.value.replace(/[^0-9]+/,'');" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
+                                    <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
                                     <button type="button" class="btn btn-default reduceQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-minus"></span>
                                     </button>
                                 </div>
                             </div>
                         </td>
+                        <td>
+                            <button type="button" data-obj="<%= JSON.stringify(item) %>" class="btn btn-primary">编辑</button>
+                            <button type="button" data-id="<%= item.cartId %>" class="btn btn-danger">删除</button>
+                        </td>
                     </tr>
                 <% }) %>
                 <tr>
                     <td>#</td>
-                    <td colspan="4" class="text-danger" style="font-size:24px;">总价:<span class="glyphicon glyphicon-yen"></span><span class="shopcartTotal"><%= shopcarts.TotalPrice %></span></td>
+                    <td colspan="5" class="text-danger" style="font-size:24px;">总价:<span class="glyphicon glyphicon-yen"></span><span class="shopcartTotal"><%= shopcarts.TotalPrice %></span></td>
                 </tr>
             </tbody>
         </table>

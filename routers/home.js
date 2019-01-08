@@ -313,6 +313,19 @@ router.get('/shopcarts',async(ctx,next)=>{
         footers:footers
     })
 })
+// 编辑购物车
+router.put('/shopcarts/:id',async(ctx,next)=>{
+
+})
+// 购物车删除
+router.del('/shopcarts/:id',async(ctx,next)=>{
+    const id = ctx.params.id
+    let flag=false;
+    await userModel.deleteShopcarts(id).then(res=>{
+        flag=true;
+    }).catch(()=>{})
+    ctx.body = flag;
+})
 //关于
 router.get('/about',async(ctx,next)=>{
     await ctx.render('other/about',{

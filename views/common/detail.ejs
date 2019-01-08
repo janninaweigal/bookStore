@@ -26,7 +26,7 @@
                     <h3 class="text-danger Price"><span class="glyphicon glyphicon-yen"></span><%= goodsDetail.Price %></h3>
                 </div>
                 <div class="input-group" style="margin:10px 0px 20px 0px">
-                    <input onkeyup="this.value=this.value.replace(/[^0-9]+/,'');" onblur="this.value=this.value.replace(/[^0-9]+/,'');" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
+                    <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                             <span class="glyphicon glyphicon-plus"></span>

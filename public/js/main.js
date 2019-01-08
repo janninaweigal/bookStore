@@ -209,6 +209,16 @@ $(function () {
             }, 2000
         );
     }
+    function showTips2(title, body,footer) {
+        var el='#myModalCommon'
+        $(el+' .modal-dialog').removeClass("modal-sm");
+        $(el+' .modal-dialog').addClass("modal-lg");
+        showModalOpen(el);
+        $(el+' .modal-title').text(title);
+        $(el+' .modal-body').html(body);
+        $(el+' .modal-body').nextAll().remove();
+        $(el+' .modal-body').after(footer);
+    }
     // 评论
     $("#comment .sendComment").click(function(){
         var that=$(this);
@@ -264,10 +274,81 @@ $(function () {
             })
         }
     })
-    $("#shopcarts .table input[type='number']").bind("input propertychange",function(target){
+    // input输入时,总价同时改变
+    $("#shopcarts .table input[type='text']").keyup(function(event){
+        if(event.keyCode>=48&&event.keyCode<=57){
+            return;
+        }
+        $(this).val(parseInt($(this).val()))
         getTotalPrice()
     });
+    // 对象字符串转对象
+    function stringToObj(str){
+        return JSON.parse(str)
+    }
+    // 购物车的编辑
+    $("#shopcarts .btn-primary").click(function(){
+        var str=$(this).attr("data-obj")
+        var obj=stringToObj(str);
+        obj.Quantity=$(this).parent().prev().find("input[type='text']").val()||0;
+        var body=`<form class="form-horizontal">
+        <div class="form-group">
+          <label for="goodName" class="col-sm-2 control-label">商品名称</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="goodName" value="${obj.Name}" disabled>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="goodPrice" class="col-sm-2 control-label">单价</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="goodPrice" value="${obj.Price}" disabled>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="goodQuantity" class="col-sm-2 control-label">数量</label>
+          <div class="col-sm-10">
+            <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" class="form-control" id="goodQuantity" value="${obj.Quantity}">
+          </div>
+        </div>`
+        var param=JSON.stringify(obj)
+        var footer=`<div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary updateShopcart" data-obj='${param}'>保存</button>
+      </div>`
+        showTips2("编辑购物车", body,footer)
+        // 编辑购物车的保存
+        $("#myModalCommon .updateShopcart").click(function(){
+            var obj=JSON.parse($(this).attr('data-obj'))
+            obj.Quantity=$(this).parent().prev().find(".form-group:last-child input[type='text']").val()
+
+        })
+    });
     
+    $("#shopcarts .btn-danger").click(function(){
+        var that=$(this)
+        var id=that.attr("data-id");
+        if(id){
+            $.ajax({
+                url: "/shopcarts/"+id,
+                type: 'DELETE',
+                cache: false,
+                success: function (res) {
+                    if(res){
+                        showTips('购物车','删除成功')
+                        that.parent().parent().remove();
+                        getTotalPrice()
+                    }else{
+                        showTips('购物车','删除失败')
+                    }
+                },
+                fail: function () {
+                    showTips('购物车','删除失败')
+                }
+            })
+        }else{
+            showTips('购物车','购物车参数有误')
+        }
+    });
     // 购物车的总和
     function getTotalPrice(){
         var that=$('#shopcarts .table tbody tr')
@@ -313,7 +394,7 @@ $(function () {
     $('.addShopCarts').click(function (){
         var bookId=getQueryString("id");
         if(bookId){
-            var quantity=$(this).parent().prevAll().eq(3).find("input[type='number']").val()||0;
+            var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||0;
             var totalPrice=$('.totalPrice').text()||0;
             $.ajax({
                 url: "/addShopCarts",
