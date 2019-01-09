@@ -315,7 +315,28 @@ router.get('/shopcarts',async(ctx,next)=>{
 })
 // 编辑购物车
 router.put('/shopcarts/:id',async(ctx,next)=>{
-
+    const cartId = ctx.params.id
+    let data={flag:false,msg:'保存成功！'}
+    let maxQuantity=0;
+    const quantity = parseInt(ctx.request.body.quantity)
+    const totalPrice=parseFloat(ctx.request.body.totalPrice)
+    await userModel.findMaxQuantity(cartId).then(res=>{
+        maxQuantity=res[0].maxQuantity
+    }).catch(()=>{
+        data.flag=false;
+        data.msg='保存失败!'
+    })
+    if(quantity&&quantity>maxQuantity){
+        data.msg='保存失败，最大数量为：'+maxQuantity
+    }else{
+        await userModel.updateShopcartsQuantity([quantity,totalPrice,cartId]).then(res=>{
+            data.flag=true
+        }).catch(()=>{
+            data.flag=false;
+            data.msg='保存失败!'
+        })
+    }
+    ctx.body = data;
 })
 // 购物车删除
 router.del('/shopcarts/:id',async(ctx,next)=>{

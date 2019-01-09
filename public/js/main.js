@@ -210,9 +210,7 @@ $(function () {
         );
     }
     function showTips2(title, body,footer) {
-        var el='#myModalCommon'
-        $(el+' .modal-dialog').removeClass("modal-sm");
-        $(el+' .modal-dialog').addClass("modal-lg");
+        var el='#myModalCommon1'
         showModalOpen(el);
         $(el+' .modal-title').text(title);
         $(el+' .modal-body').html(body);
@@ -317,10 +315,33 @@ $(function () {
       </div>`
         showTips2("编辑购物车", body,footer)
         // 编辑购物车的保存
-        $("#myModalCommon .updateShopcart").click(function(){
+        $("#myModalCommon1 .updateShopcart").click(function(){
             var obj=JSON.parse($(this).attr('data-obj'))
-            obj.Quantity=$(this).parent().prev().find(".form-group:last-child input[type='text']").val()
-
+            var Quantity=parseInt($(this).parent().prev().find(".form-group:last-child input[type='text']").val())
+            var totalPrice=parseFloat(obj.Price*Quantity)
+            $.ajax({
+                url: "/shopcarts/"+obj.cartId,
+                type: 'PUT',
+                data: {
+                    quantity:Quantity,
+                    totalPrice:totalPrice
+                },
+                cache: false,
+                success: function (res) {
+                    if(res.flag){
+                        showModalHide('#myModalCommon1')
+                        showTips('购物车','保存成功~')
+                        setTimeout(()=>{
+                            location.replace(location)
+                        },1200)
+                    }else{
+                        alert(res.msg)
+                    }
+                },
+                fail: function () {
+                    alert('购物车保存失败')
+                }
+            })
         })
     });
     
