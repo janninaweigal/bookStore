@@ -355,6 +355,9 @@ router.get('/about',async(ctx,next)=>{
         footers:footers
     })
 })
+router.get('/admin',async(ctx,next)=>{
+    await ctx.render('admin')
+})
 router.get('/test',async(ctx,next)=>{
     await ctx.render('test')
 })
