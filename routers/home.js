@@ -356,6 +356,12 @@ router.get('/about',async(ctx,next)=>{
     })
 })
 router.get('/admin',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    // 判断是否登陆注册
+    if(userId){
+        
+    }
     await ctx.render('admin')
 })
 router.get('/test',async(ctx,next)=>{
