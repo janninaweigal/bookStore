@@ -1,12 +1,27 @@
 <!-- page content -->
 <div class="right_col" role="main">
-    <!-- 巨幕 -->
-    <div class="jumbotron" style="margin-bottom:25px;">
-        <div class="page-header">
-            <h1>文观书城 <small>用户管理、商品管理、购物车</small></h1>
+    <% if (title=='users.ejs') { %>
+        <%- include('adminManage/users.ejs'); %>
+    <% }else if (title=='address.ejs'){ %>
+        <%- include('adminManage/address.ejs'); %>
+     <% }else if (title=='goods.ejs'){ %>
+        <%- include('adminManage/goods.ejs'); %>
+     <% }else if (title=='shopcarts.ejs'){ %>
+        <%- include('adminManage/shopcarts.ejs'); %>
+     <% }else if (title=='comment.ejs'){ %>
+        <%- include('adminManage/comment.ejs'); %>
+     <% }else if (title=='banner.ejs'){ %>
+        <%- include('adminManage/banner.ejs'); %>
+    <% }else{ %>
+        <!-- 巨幕 -->
+        <div class="jumbotron" style="margin-bottom:25px;">
+            <div class="page-header">
+                <h1>文观书城 <small>用户管理、商品管理、购物车</small></h1>
+            </div>
+            <p><a class="btn btn-primary btn-lg" href="/" role="button">跳转文观书城前台</a></p>
         </div>
-        <p><a class="btn btn-primary btn-lg" href="/" role="button">跳转文观书城前台</a></p>
-    </div>
+    <% } %>
+    
     <!-- 轮播图 
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">

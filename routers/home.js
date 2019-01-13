@@ -2,6 +2,7 @@ const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const footers = require('../json/footers');
 import {switchNav} from '../utils/common'
+import {getMenu} from '../utils/admin'//后台的方法集合
 let labels=[]
 // 查找
 let goods={Data:[],count:0,typeId:-1,pageNo:0,pageSize:8,searchName:'search'}
@@ -268,7 +269,7 @@ router.get('/search',async(ctx,next)=>{
         else if(search.pageNo>=search.count)search.pageNo=search.count-1
     })
     const No=search.pageNo*search.pageSize
-    // 搜索结果的长度
+    // 搜索结果
     await userModel.selectBooksPageByTypeId(typeId,No,search.pageSize,searchName).then(res=>{
         if(res){
             search.Data=res
@@ -356,16 +357,145 @@ router.get('/about',async(ctx,next)=>{
     })
 })
 router.get('/admin',async(ctx,next)=>{
-    const params=ctx.request.body
     const userId=ctx.session.id
+    const menus=getMenu()
+    const title='admin.ejs'
     // 判断是否登陆注册
     if(userId){
-        
+        await ctx.render('admin',{
+            session: ctx.session,
+            menus:menus,
+            title:title
+        })
+    }else{
+        ctx.redirect('/');
     }
-    await ctx.render('admin')
+})
+// 用户信息
+router.get('/admin/users',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('用户管理','/admin/users')
+    const title='users.ejs'
+    const querystring=ctx.request.query
+    const pageNo=querystring.pageNo?parseInt(querystring.pageNo):0
+    let table={
+        Data:[],count:0,pageNo:pageNo,pageSize:10,globalName:'',url:'admin/users'
+    }
+    await userModel.selectBookListLength(table.globalName).then(res=>{
+        table.count=Math.ceil(res[0].count/table.pageSize)
+        if(table.pageNo<=0)table.pageNo=0
+        else if(table.pageNo>=table.count)table.pageNo=table.count-1
+    }).catch(()=>{})
+    const No=table.pageNo*table.pageSize
+    await userModel.selectBookList(table.globalName,No,table.pageSize).then(res=>{
+        if(res){
+            table.Data=res
+        }
+    }).catch(()=>{})
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title,
+        table:table
+    })
+})
+// 用户地址
+router.get('/admin/address',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('用户管理','/admin/address')
+    const title='address.ejs'
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title
+    })
+})
+// 所有商品
+router.get('/admin/goods',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('商品管理','/admin/shopcarts')
+    const title='goods.ejs'
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title
+    })
+})
+// 商品评论
+router.get('/admin/comment',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('商品管理','/admin/comment')
+    const title='comment.ejs'
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title
+    })
+})
+// 轮播图
+router.get('/admin/banner',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('轮播图','/admin/banner')
+    const title='banner.ejs'
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title
+    })
+})
+// 购物车
+router.get('/admin/shopcarts',async(ctx,next)=>{
+    const params=ctx.request.body
+    const userId=ctx.session.id
+    const menus=getMenu('购物车','/admin/shopcarts')
+    const title='shopcarts.ejs'
+    await ctx.render('admin',{
+        session: ctx.session,
+        menus:menus,
+        title:title
+    })
 })
 router.get('/test',async(ctx,next)=>{
     await ctx.render('test')
 })
 
 module.exports = router;
+// 上传头像
+// console.log(ctx.session.id)
+// let base64Data = ctx.request.body.avator.replace(/^data:image\/\w+;base64,/, "");
+// //  let base64Data = ctx.request.body.avator.substring(22);
+
+// let dataBuffer = new Buffer(base64Data, 'base64');
+// // let upDate = new Date();
+// let getName = (moment().format('YYYY-MM-DD')).toString() + '-' +1000*(Math.random().toFixed(2)) + '.png';
+//     console.log(getName)
+
+// let upload = await new Promise((reslove,reject)=>{
+//     fs.writeFile('./public/images/' + getName, dataBuffer, err => { 
+//         if (err) {
+//             throw err;
+//             reject(false)
+//         };
+//         reslove(true)
+     
+//     });            
+// })
+// if(upload){
+//     await userModel.updateUserImg([getName,ctx.session.id])
+//         .then(result=>{
+//             console.log(result);
+//             console.log('头像上传成功') 
+//             ctx.session.avator = getName;
+//             ctx.body = true;
+//         }).catch(err=>{
+//             console.log(err)
+//         })
+// }else{  
+//     console.log('上传失败');
+
+// }

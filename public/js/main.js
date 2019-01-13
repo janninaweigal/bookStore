@@ -307,7 +307,7 @@ $(function () {
           <div class="col-sm-10">
             <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" class="form-control" id="goodQuantity" value="${obj.Quantity}">
           </div>
-        </div>`
+        </div></form>`
         var param=JSON.stringify(obj)
         var footer=`<div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

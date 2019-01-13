@@ -1,6 +1,11 @@
 .left_col {
     background: #2A3F54
 }
+.show-grid{
+    margin:25px 0px;
+}
+.font-size-20{font-size:20px}
+a,a:hover{text-decoration: none;}
 .nav-sm .container.body .col-md-3.left_col {
     min-height: 100%;
     width: 70px;
@@ -23,6 +28,23 @@
     padding: 85px 20px 0;
     margin-left: 70px;
     z-index: 2
+}
+.container.body .right_col table tr th,.container.body .right_col table tr td{ vertical-align: middle;text-align:center;}
+.container.body .right_col .uploadFileBox{
+    position: relative;vertical-align: middle;
+}
+.container.body .right_col .uploadFile{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+    height: 100%;
+    font-size: 0;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    padding: 0px;
+    margin: 0px;
+    cursor: pointer;
 }
 .navbar-right {
     margin-right: 0
@@ -82,6 +104,12 @@
 .nav-sm .profile {
     display: none
 }
+.nav-sm .menu_section>ul {
+    margin-top: 50px;
+}
+.nav.side-menu li a .fa {
+    margin-right:10px;
+}
 .menu_section {
     margin-bottom: 35px
 }
@@ -105,6 +133,7 @@
 }
 .img-circle.profile_img {
     width: 80px;
+    height: 80px;
     background: #fff;
     z-index: 1000;
     position: inherit;
@@ -164,12 +193,12 @@
     left:0px;
     z-index: 1
 }
+.nav-md .container.body .right_col .page-title .input-group{
+    margin-top: -40px;
+}
 .nav-md .container.body .col-md-3.left_col.menu_fixed {
     height: 100%;
     position: fixed
-}
-body .container.body .right_col {
-    background: #F7F7F7
 }
 .nav-md .container.body .right_col {
     padding: 85px 20px 0;
