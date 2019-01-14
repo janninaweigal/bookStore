@@ -56,7 +56,7 @@ app.use(require('./routers/personal').routes())
 app.use(require('./routers/exit.js').routes())
 //错误
 app.use(require('./utils/handle.js'))
-//监听在8080端口
-app.listen(8080) 
+//监听端口
+app.listen(config.HOST) 
 
 console.log(`${config.HOST}${config.port}`)
