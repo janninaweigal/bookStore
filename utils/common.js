@@ -36,3 +36,10 @@ export function switchNav(router) {
     }
     return navArray;
 }
+
+export function isCorrectParam(params) {
+    for (var value in params) {
+        if(params[value]=='')return false
+    }
+    return true;
+}

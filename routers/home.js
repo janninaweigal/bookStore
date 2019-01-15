@@ -1,7 +1,9 @@
 const router = require('koa-router')();
 const userModel = require('../lib/mysql');
 const footers = require('../json/footers');
-import {switchNav} from '../utils/common'
+const moment = require('moment');
+const fs = require('fs');
+import {switchNav,isCorrectParam} from '../utils/common'
 import {getMenu} from '../utils/admin'//后台的方法集合
 let labels=[]
 // 查找
@@ -382,6 +384,7 @@ router.get('/admin/users',async(ctx,next)=>{
     let table={
         Data:[],count:0,pageNo:pageNo,pageSize:10,globalName:'',url:'admin/users'
     }
+    if(!userId) ctx.redirect('/');//不登陆跳转到主页
     await userModel.selectBookListLength(table.globalName).then(res=>{
         table.count=Math.ceil(res[0].count/table.pageSize)
         if(table.pageNo<=0)table.pageNo=0
@@ -399,6 +402,57 @@ router.get('/admin/users',async(ctx,next)=>{
         title:title,
         table:table
     })
+})
+// 新增用户信息
+router.post('/admin/users',async(ctx,next)=>{
+    const params = ctx.request.body
+    const Author=params.Author
+    const Describe=params.Describe
+    const Name=params.Name
+    const Price=params.Price
+    const PublishCompany=params.PublishCompany
+    const Quantity=params.Quantity
+    const type=params.type
+    let flag=false;
+    if(isCorrectParam(params)){
+        let BookTypeId=-1
+        // 上传头像
+        let base64Data = params.BookPhoto.replace(/^data:image\/\w+;base64,/, "");
+        let dataBuffer = new Buffer(base64Data, 'base64');
+        let getName = (moment().format('YYYY-MM-DD')).toString() + '-' +1000*(Math.random().toFixed(2)) + '.png';
+
+        let upload = await new Promise((reslove,reject)=>{
+            fs.writeFile('./public/images/' + getName, dataBuffer, err => { 
+                if (err) {
+                    reject(false)
+                    throw err;
+                };
+                reslove(true)
+            });            
+        })
+        // 插入图书类型，获得自增id
+        await userModel.insertBookType(type).then(res=>{
+            BookTypeId=res.insertId
+        }).catch(()=>{})
+        // 插入图书
+        const BookPhoto=['images/',getName].join('')
+        if(upload&&BookTypeId!=-1){
+            await userModel.insertBookInfo([BookTypeId,Author,Name,BookPhoto,Price,Quantity,Describe,PublishCompany]).then(res=>{
+                if(res.affectedRows==1){
+                    flag=true;
+                }
+            }).catch(()=>{})
+        }
+    }
+    ctx.body = flag;
+})
+// 编辑用户信息
+router.put('/admin/users/:id',async(ctx,next)=>{
+    ctx.body = false;
+})
+// 删除用户信息
+router.delete('/admin/users/:id',async(ctx,next)=>{
+    ctx.body = false;
 })
 // 用户地址
 router.get('/admin/address',async(ctx,next)=>{
@@ -465,37 +519,3 @@ router.get('/test',async(ctx,next)=>{
 })
 
 module.exports = router;
-// 上传头像
-// console.log(ctx.session.id)
-// let base64Data = ctx.request.body.avator.replace(/^data:image\/\w+;base64,/, "");
-// //  let base64Data = ctx.request.body.avator.substring(22);
-
-// let dataBuffer = new Buffer(base64Data, 'base64');
-// // let upDate = new Date();
-// let getName = (moment().format('YYYY-MM-DD')).toString() + '-' +1000*(Math.random().toFixed(2)) + '.png';
-//     console.log(getName)
-
-// let upload = await new Promise((reslove,reject)=>{
-//     fs.writeFile('./public/images/' + getName, dataBuffer, err => { 
-//         if (err) {
-//             throw err;
-//             reject(false)
-//         };
-//         reslove(true)
-     
-//     });            
-// })
-// if(upload){
-//     await userModel.updateUserImg([getName,ctx.session.id])
-//         .then(result=>{
-//             console.log(result);
-//             console.log('头像上传成功') 
-//             ctx.session.avator = getName;
-//             ctx.body = true;
-//         }).catch(err=>{
-//             console.log(err)
-//         })
-// }else{  
-//     console.log('上传失败');
-
-// }
