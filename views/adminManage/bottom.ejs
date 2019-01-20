@@ -4,3 +4,17 @@
 <script src="/js/fastclick.js"></script>
 <!-- Custom Theme Scripts -->
 <script src="/js/custom.min.js"></script>
+<% if (title=='users.ejs') { %>
+    <script src="/js/bootstrap-switch.js"></script>
+    <script src="/js/admin/users.js"></script>
+<% }else if (title=='address.ejs'){ %>
+    <script src="/js/admin/address.js"></script>
+<% }else if (title=='goods.ejs'){ %>
+    <script src="/js/admin/goods.js"></script>
+<% }else if (title=='shopcarts.ejs'){ %>
+    <script src="/js/admin/shopcarts.js"></script>
+<% }else if (title=='comment.ejs'){ %>
+    <script src="/js/admin/comment.js"></script>
+<% }else if (title=='banner.ejs'){ %>
+   <script src="/js/admin/banner.js"></script>
+<% } %>

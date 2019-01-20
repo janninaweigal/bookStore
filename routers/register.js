@@ -4,9 +4,10 @@ var md5 = require('md5')
 
 // post 注册
 router.post('/register', async(ctx, next) => {
-    const username = ctx.request.body.username
-    const password =ctx.request.body.password
-    const email =ctx.request.body.email
+    const body=ctx.request.body
+    const username = body.username
+    const password =body.password
+    const email =body.email
     let result={
         flag:false,
         msg:'用户名已被注册！'
@@ -24,7 +25,7 @@ router.post('/register', async(ctx, next) => {
         await userModel.insertUser([username, md5(password + 'asd&$BH&*'),email ]).then(res=>{
             ctx.session.id = res.insertId;
             ctx.session.username=username;
-            ctx.session.avator = 'default.jpg';
+            ctx.session.avator = '/images/default.jpg';
             result={
                 flag:true,
                 msg:'用户名'+username+',注册成功！'

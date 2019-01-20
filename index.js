@@ -54,9 +54,16 @@ app.use(require('./routers/register.js').routes())
 app.use(require('./routers/personal').routes())
 //退出登录
 app.use(require('./routers/exit.js').routes())
+// 后台管理的路由
+app.use(require('./routers/admin/user.js').routes())// 用户管理
+app.use(require('./routers/admin/banner.js').routes())// 轮播图
+app.use(require('./routers/admin/address.js').routes())// 用户地址
+app.use(require('./routers/admin/comment.js').routes())// 图书评论
+app.use(require('./routers/admin/goods.js').routes())// 图书管理
+app.use(require('./routers/admin/shopcarts.js').routes())// 购物车
 //错误
 app.use(require('./utils/handle.js'))
 //监听端口
-app.listen(config.HOST) 
+app.listen(config.port) 
 
 console.log(`${config.HOST}${config.port}`)

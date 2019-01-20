@@ -8,7 +8,7 @@
             <div class="input-group">
             <input type="text" class="form-control" placeholder="Search for...">
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button"> 搜索 </button>
+                <button class="btn btn-default" type="button" onclick="usersSearch(this)"> 搜索 </button>
             </span>
             </div>
         </div>
@@ -19,34 +19,24 @@
     <thead>
     <tr>
         <th>#</th>
-        <th>作者</th>
-        <th>图书名称</th>
-        <th>图书照片</th>
-        <th>图书数量</th>
-        <th>图书价格</th>
-        <th>图书描述</th>
-        <th>出版社</th>
-        <th>出版时间</th>
-        <th>ISBN</th>
+        <th>用户名</th>
+        <th>用户头像</th>
+        <th>用户邮箱</th>
+        <th>是否管理员</th>
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
         <% table.Data.forEach(function(item,index){ %>
             <tr>
-                <th scope="row"><%= index+1 %></th>
-                <td><%= item.Author %></td>
-                <td width="150px"><%= item.Name %></td>
-                <td><img src="<%= item.BookPhoto %>" style="width:80px;height:80px;"/></td>
-                <td><%= item.Quantity %></td>
-                <td><span class="glyphicon glyphicon-yen text-primary font-size-20"></span><%= item.Price %></td>
-                <td><%= item.Describe %></td>
-                <td><%= item.PublishCompany %></td>
-                <td><%= item.PublishTime %></td>
-                <td><%= item.Isbn %></td>
+                <th scope="row"><%= (table.pageNo*table.pageSize)+(index+1) %> %></th>
+                <td><%= item.Username %></td>
+                <td><img src="<%= item.Avatar %>" style="width:80px;height:80px;"/></td>
+                <td><%= item.Email %></td>
+                <td><input class="isAdmin" type="checkbox" data-id="<%= item.Id %>" <%= item.IsAdmin==1?'checked':'' %> ></td>
                 <td>
                     <button type="button" data-obj="<%= JSON.stringify(item) %>" data-action='1' class="btn btn-primary getUserModal">编辑</button>
-                    <button type="button" data-id="<%= item.cartId %>" class="btn btn-danger">删除</button>
+                    <button type="button" class="btn btn-danger" onclick='deleteUser(<%= item.Id %>)'>删除</button>
                 </td>
             </tr>
         <% }) %>
