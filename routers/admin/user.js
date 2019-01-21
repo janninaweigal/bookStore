@@ -54,17 +54,21 @@ router.get('/admin/users',async(ctx,next)=>{
 router.post('/admin/users',async(ctx,next)=>{
     const params = ctx.request.body
     const Username=params.Username
-    const Photo=params.Avatar
+    let Photo=params.Avatar
     const Email=params.Email
     const IsAdmin=params.IsAdmin
     let flag=false;
     if(isCorrectParam(params)){
         // 上传头像
-        const fileName=getFileName();
-        let upload = await writePhotoFile(Photo,fileName)
+        let fileName =getFileName();
+        let upload = true;
+        if(Photo!='/images/default.jpg'){
+            upload =await writePhotoFile(Photo,fileName)
+        }
+        Photo=(Photo=='/images/default.jpg'?'/images/default.jpg':fileName)
         // 插入用户信息
         if(upload){
-            await userModel.insertUserInfo([Username,fileName,Email,IsAdmin]).then(res=>{
+            await userModel.insertUserInfo([Username,Photo,Email,IsAdmin]).then(res=>{
                 if(res.affectedRows==1){
                     flag=true;
                 }
@@ -120,6 +124,7 @@ router.put('/admin/users/:id',async(ctx,next)=>{
     }
     ctx.body = flag;
 })
+// 更改用户权限
 router.put('/admin/users/isAdmin/:id',async(ctx,next)=>{
     const params = ctx.request.body
     const IsAdmin=params.IsAdmin

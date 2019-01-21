@@ -65,7 +65,7 @@ $(function(){
             onSwitchChange:function(event,state){
                 if(state==true){  
                     console.log('已打开');
-                }else{  
+                }else{
                     console.log('已关闭');
                 }  
             }
