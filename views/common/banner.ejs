@@ -13,7 +13,7 @@
                 </div>
                 <form class="form-inline text-right" style="margin-top:3px">
                     <div class="form-group">
-                        <input class="form-control" placeholder="请输入关键词" type="text" maxlength="50" autocomplete="off"/>
+                        <input class="form-control" placeholder="请输入关键词" value="<%= goods.searchName %>" type="text" maxlength="50" autocomplete="off"/>
                         <div class="btn-group">
                             <% if (goods.typeId==-1) { %>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">所有消息&nbsp;<span class="caret"></span></button>

@@ -4,7 +4,7 @@ const footers = require('../json/footers');
 import {switchNav} from '../utils/common'
 let labels=[]
 // 查找
-let goods={Data:[],count:0,typeId:-1,pageNo:0,pageSize:8,searchName:'search'}
+let goods={Data:[],count:0,typeId:-1,pageNo:0,pageSize:8,searchName:''}
 // 获取相应标签的所有图书列表
 async function getList(data,Id){
     await userModel.selectBooksByTypeId(Id).then(res=>{
@@ -206,7 +206,7 @@ router.post('/addShopCarts', async(ctx, next) => {
 router.get('/hotGoods',async(ctx,next)=>{
     const querystring=ctx.request.query
     let typeId=querystring.typeId?querystring.typeId:-1
-    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'hotGoods'}// 商品详情 // 默认第一页
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,1,undefined)
     await getLabels();
     await ctx.render('other/hotGoods',{
@@ -222,7 +222,7 @@ router.get('/memberGoods',async(ctx,next)=>{
     const querystring=ctx.request.query
     let typeId=querystring.typeId?querystring.typeId:-1
     // 查找会员商品
-    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'memberGoods'}// 商品详情 // 默认第一页
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,undefined,1)
     await getLabels();
     await ctx.render('other/memberGoods',{
@@ -257,7 +257,7 @@ router.get('/search',async(ctx,next)=>{
     const pageNo=querystring.pageNo?parseInt(querystring.pageNo):0
     let typeId=querystring.typeId?querystring.typeId:-1
     let searchName=querystring.searchName?decodeURI(querystring.searchName):''
-    let search={Data:[],typeId:typeId,count:0,pageNo:pageNo,pageSize:8,searchName:'search'}// 商品详情
+    let search={Data:[],typeId:typeId,count:0,pageNo:pageNo,pageSize:8,searchName:searchName}// 商品详情
     
     await getLabels();
 
@@ -288,7 +288,7 @@ router.get('/shopcarts',async(ctx,next)=>{
     let shopcarts={data:[]}
     let typeId=ctx.request.query.typeId?querystring.typeId:-1
     // 查找
-    let goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'search'}
+    let goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}
     await getLabels();
     // 判断是否登陆注册
     if(ctx.session.username){
