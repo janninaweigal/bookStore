@@ -3,24 +3,7 @@
 <% include modal %>
 <div class="footer">
     <div class="container">
-        <div class="row-fluid">
-            <div class="col-md-5 col-sm-6 col-xs-12">
-                <h4><%= footers.left.title %></h4>
-                <% footers.left.study.forEach(function(item){ %>
-                    <a href="<%= item.href %>" target="_blank" style="color:#fff;"><%= item.name %>&nbsp;</a>
-                <% }) %>
-                <br/>
-                <% footers.left.contact.forEach(function(item){ %>
-                 <span><%= item.way %>&nbsp;</span>
-                <% }) %>
-            </div>
-            <div class="col-md-5 col-md-offset-2 col-sm-6 col-xs-12">
-                <h4><%= footers.right.title %></h4>
-                <% footers.right.images.forEach(function(item){ %>
-                 <img src="<%= item.src %>" width="150" height="150" alt="<%= item.name %>"/>
-                <% }) %>
-            </div>
-        </div>
+        Copyright &copy <%= new Date().getFullYear() %> 文观书城 ｜ 闽ICP备18006629号-1
     </div>
 </div>
 <!--返回顶部-->
