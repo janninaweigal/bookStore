@@ -50,10 +50,14 @@ $(function(){
         $(el+' .uploadFile').change(function(){
             var that= $(this);
             var file = that.get(0).files[0];
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = function () {
-                that.parent().prev().find('img').attr("src", reader.result);
+            if(/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name)){
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    that.parent().prev().find('img').attr("src", reader.result);
+                }
+            }else{
+                alert("图片类型必须是.gif,jpeg,jpg,png中的一种");
             }
         })
         $('#isAdmin').bootstrapSwitch({  
@@ -71,8 +75,6 @@ $(function(){
             }
          })
     })
-    
-    
 })
 // users body
 function userBody(Username,Avatar,Email,IsAdmin,Password,flag){

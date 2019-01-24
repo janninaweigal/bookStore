@@ -1,1 +1,83 @@
-comment.ejs
+<div class="page-title">
+    <div class="title_left">
+    <h3>商品评论</h3>
+    </div>
+
+    <div class="title_right">
+        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
+            <div class="input-group">
+            <input type="text" class="form-control" placeholder="用户、图书名称、评论内容" value="<%= table.globalName %>">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="commentsSearch(this)"> 搜索 </button>
+            </span>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>用户</th>
+        <th>图书名称</th>
+        <th>图书照片</th>
+        <th>评论内容</th>
+        <th>最后编辑时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+        <% if (table.Data.length==0) { %>
+            <tr>
+                <td colspan='11'>无搜索结果</td>
+            </tr>
+        <% }else{ %>
+            <% table.Data.forEach(function(item,index){ %>
+                <tr>
+                    <th scope="row"><%= (table.pageNo*table.pageSize)+(index+1) %></th>
+                    <td><%= item.Username %></td>
+                    <td width="150px"><%= item.BookName %></td>
+                    <td><img src="<%= item.BookPhoto %>" style="width:80px;height:80px;"/></td>
+                    <td><%= item.Content %></td>
+                    <td><%= item.UpdateTime %></td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick='ToDelete(<%= item.Id %>)'>删除</button>
+                    </td>
+                </tr>
+            <% }) %>
+        <% } %>
+    </tbody>
+</table>
+
+<% if (table.count>1) { %>
+    <nav class="text-center">
+        <ul class="pagination">
+            <% if (table.pageNo==0) { %>
+                <li class="disabled">
+            <% }else{ %>
+                <li>
+            <% } %>
+                <a href="<%= table.pageNo==0?'javascript:void(0)':'/'+table.url+'?pageNo='+(parseInt(table.pageNo)-1)%>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <% for(var i=0;i<table.count;i++){ %>
+                <% if (i==table.pageNo) { %>
+                    <li class="active">
+                <% }else{ %>
+                    <li>
+                <% } %>
+                <a href="<%= '/'+table.url+'?pageNo='+ i %>"><%= i+1 %></a></li>
+            <% } %>
+            <% if (table.pageNo==(table.count-1)) { %>
+                <li class="disabled">
+            <% }else{ %>
+                <li>
+            <% } %>
+                <a href="<%= table.pageNo==(table.count-1)?'javascript:void(0)':'/'+table.url+'?pageNo='+(parseInt(table.pageNo)+1)%>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+<% } %>
