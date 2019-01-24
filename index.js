@@ -61,6 +61,7 @@ app.use(require('./routers/admin/address.js').routes())// 用户地址
 app.use(require('./routers/admin/comment.js').routes())// 图书评论
 app.use(require('./routers/admin/goods.js').routes())// 图书管理
 app.use(require('./routers/admin/shopcarts.js').routes())// 购物车
+app.use(require('./routers/alipay.js').routes())// 支付
 //错误
 app.use(require('./utils/handle.js'))
 //监听端口
