@@ -347,6 +347,10 @@ router.del('/shopcarts/:id',async(ctx,next)=>{
     }).catch(()=>{})
     ctx.body = flag;
 })
+// 跳转确认订单页面
+router.post('/confirmOrder', async(ctx, next) => {
+    
+})
 //关于
 router.get('/about',async(ctx,next)=>{
     await ctx.render('other/about',{

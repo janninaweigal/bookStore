@@ -470,6 +470,30 @@ $(function () {
         var typeId=$(this).attr('data-typeId')
         window.location.href=['/search?typeId=',typeId,'&searchName=',encodeURI(searchName)].join('')
     })
+    // 单品支付
+    $('.alipay').click(function(){
+        var bookId=getQueryString("id");
+        if(bookId){
+            var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||0;
+            $.ajax({
+                url: "/confirmOrder",
+                type: 'POST',
+                data:{
+                    bookId,
+                    quantity
+                },
+                cache: false,
+                success: function (res) {
+                    
+                },
+                fail: function () {
+                    showTips('错误','请先登录！')
+                }
+            })
+        }else{
+            alert('地址栏参数错误')
+        }
+    })
     // 公用开启和关闭
     function showModalOpen(str){
         $(str).modal('show');

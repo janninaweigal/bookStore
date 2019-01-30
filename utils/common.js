@@ -1,6 +1,7 @@
 const request = require("request");
 const fs = require('fs');
 const moment=require('moment')
+
 /**
  * 切换导航
  * @param {*} name 
@@ -95,4 +96,40 @@ export async function updateImg(url, filename){
         })
     }
     return flag;
+}
+/**
+ * 
+ * @param {*} totalAmount 价格
+ * @param {*} subject 商品
+ * @param {*} body 商品详情
+ */
+export async function alipay(totalAmount,subject, body){
+    const AlipaySdk = require('alipay-sdk').default;
+    const AlipayFormData = require('alipay-sdk/lib/form').default;
+    const config = require('../config/default.js');    //引入默认文件
+    const alipaySdk = new AlipaySdk({
+        appId: '2016092400587087',
+        gateway:'https://openapi.alipaydev.com/gateway.do',
+        privateKey: fs.readFileSync('./private-key.pem', 'utf-8'),
+        alipayPublicKey: fs.readFileSync('./public-key.pem', 'utf-8'),
+    });
+    const formData = new AlipayFormData();
+    // 调用 setMethod 并传入 get，会返回可以跳转到支付页面的 url
+    formData.setMethod('get');
+    formData.addField('returnUrl', `http://${config.HOST}:${config.port}/callback`);
+    formData.addField('notifyUrl', `http://${config.HOST}:${config.port}/callback`);
+    formData.addField('bizContent', {
+        outTradeNo: new Date().getTime(),
+        productCode: 'FAST_INSTANT_TRADE_PAY',
+        totalAmount: totalAmount,
+        subject: subject,
+        body: body,
+    });
+
+    const result =await alipaySdk.exec('alipay.trade.page.pay', {}, {
+        // 通过 formData 设置请求参数
+        formData: formData,
+        validateSign: true,
+    })
+    return result;
 }
