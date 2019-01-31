@@ -208,7 +208,6 @@ router.get('/hotGoods',async(ctx,next)=>{
     let typeId=querystring.typeId?querystring.typeId:-1
     goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,1,undefined)
-    await getLabels();
     await ctx.render('other/hotGoods',{
         goods:goods,
         session:ctx.session,
@@ -347,9 +346,44 @@ router.del('/shopcarts/:id',async(ctx,next)=>{
     }).catch(()=>{})
     ctx.body = flag;
 })
+// 商品详情购买时 判断是否登录
+router.post('/orderIsLogin', async(ctx, next) => {
+    let result={
+        flag:false,
+        msg:'请先登录！'
+    };
+    const params=ctx.request.body
+    const bookId=params.bookId;
+    const quantity=params.quantity;
+    // 判断是否登陆注册
+    if(ctx.session.username){
+        if(bookId&&quantity){
+            if(quantity>0)result.flag=true;
+            result.msg='购买数量至少为1 '
+        }else{
+            result.msg='参数错误！！'
+        }
+    }
+    ctx.body = result;
+})
 // 跳转确认订单页面
-router.post('/confirmOrder', async(ctx, next) => {
-    
+router.get('/confirmOrder', async(ctx, next) => {
+    await getLabels();
+    const params=ctx.request.query
+    const bookId=params.bookId;
+    const quantity=params.quantity;
+    let goodDetail={}
+    await userModel.selectBookById(bookId).then(res=>{
+        goodDetail=res[0];
+        goodDetail.Quantity=quantity
+    }).catch()
+    await ctx.render('other/confirmOrder',{
+        goodDetail:goodDetail,
+        session:ctx.session,
+        navArray: switchNav(ctx.path),
+        labels:labels,
+        footers:footers
+    })
 })
 //关于
 router.get('/about',async(ctx,next)=>{

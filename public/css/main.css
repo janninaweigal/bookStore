@@ -70,6 +70,10 @@ ul.navbar-nav li:hover span{
 }
 /*页脚*/
 .footer{
+    /* position: fixed;
+    left:0px;
+    bottom:0px;
+    width:100%; */
     padding: 40px 20px;
     color: #C0E1FF;
     text-align: center;

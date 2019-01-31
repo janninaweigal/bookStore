@@ -26,7 +26,7 @@
                     <h3 class="text-danger Price"><span class="glyphicon glyphicon-yen"></span><%= goodsDetail.Price %></h3>
                 </div>
                 <div class="input-group" style="margin:10px 0px 20px 0px">
-                    <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity %>" class="form-control">
+                    <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" value="1" placeholder="请输入数量" maxlength="<%= goodsDetail.Quantity.length %>" class="form-control">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -36,7 +36,7 @@
                         </button>
                     </div>
                 </div>
-                <p><h3 class="text-primary text-right">总价：<mark class="totalPrice"></mark></h3></p>
+                <p><h3 class="text-primary text-right">总价：<mark class="totalPrice"><%= goodsDetail.Price %></mark></h3></p>
                 <p class="text-right margin-top-15">
                     <button type="button" class="btn btn-primary btn-lg addShopCarts"><span class="glyphicon glyphicon-heart-empty" style="top:4px"></span>&nbsp;加入购物车</button>
                     <button type="button" class="btn btn-danger btn-lg alipay" style="padding-left:40px;padding-right:40px;">购买&nbsp;<span class="glyphicon glyphicon-phone" style="top:2px"></span></button>

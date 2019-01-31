@@ -415,7 +415,7 @@ $(function () {
     $('.addShopCarts').click(function (){
         var bookId=getQueryString("id");
         if(bookId){
-            var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||0;
+            var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||1;
             var totalPrice=$('.totalPrice').text()||0;
             $.ajax({
                 url: "/addShopCarts",
@@ -476,7 +476,7 @@ $(function () {
         if(bookId){
             var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||0;
             $.ajax({
-                url: "/confirmOrder",
+                url: "/orderIsLogin",
                 type: 'POST',
                 data:{
                     bookId,
@@ -484,15 +484,45 @@ $(function () {
                 },
                 cache: false,
                 success: function (res) {
-                    
+                    if(res.flag){
+                        window.location.href=["/confirmOrder?bookId=",bookId,'&quantity=',quantity].join('')
+                    }else{
+                        showTips('购买',res.msg)
+                    }
                 },
                 fail: function () {
                     showTips('错误','请先登录！')
                 }
             })
         }else{
-            alert('地址栏参数错误')
+            showTips('错误','地址栏参数错误')
         }
+    })
+    $('.addressOrder').click(function(){
+        var body=`<form class="form-horizontal">
+        <div class="form-group">
+          <label for="name" class="col-sm-2 control-label">收货人</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address" class="col-sm-2 control-label">收货地址</label>
+          <div class="col-sm-10">
+            <input type="textarea" class="form-control" id="address">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="phone" class="col-sm-2 control-label">电话号码</label>
+          <div class="col-sm-10">
+            <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" class="form-control" id="phone">
+          </div>
+        </div></form>`
+        var footer=`<div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary">保存</button>
+        </div>`
+        showTips2("选择地址", body,footer)
     })
     // 公用开启和关闭
     function showModalOpen(str){
