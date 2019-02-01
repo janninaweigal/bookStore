@@ -31,6 +31,7 @@ router.post('/login', async(ctx, next) => {
                 ctx.session.id = res[0].Id;
                 ctx.session.username=res[0].Username;
                 ctx.session.avator = res[0].Avatar;
+                ctx.session.email = res[0].Email;
             }).catch(err => {
                 result.msg='出现错误！！'
             })

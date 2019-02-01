@@ -64,6 +64,9 @@ $(function () {
             flag=true;
         }
     });
+    function addDisabled(el){
+        $(el).attr('disabled',true)
+    }
     //确认密码验证
     $('#passConfirm').keyup(function(){
     	$(this).parent().nextAll().remove();

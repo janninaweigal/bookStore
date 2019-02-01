@@ -75,7 +75,7 @@ export function photoToBase64(BookPhoto){
  */
 export function getFileName(){
     const fileName=(moment().format('YYYY-MM-DD')).toString() + '-' +1000*(Math.random().toFixed(2))
-    return ['/images/',fileName,'.png'].join('');
+    return ['images/',fileName,'.png'].join('');
 }
 /**
  * 下载图片

@@ -1,0 +1,21 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">个人信息</a></li>
+    <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">其他</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content personInfo">
+    <div role="tabpanel" class="tab-pane active" id="profile">
+        <div class="profile">
+            <img src="<%= session.avatar|| 'images/default.jpg' %>" title="<% session.username %>"/>
+            <input type="file" accept="image/*" class="uploadFile" name="Avatar" value=""/>
+            <div class="imgTip">点击头像进行上传</div>
+            <span class="label label-danger"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;<%= session.username||'某某' %></span>
+            <span class="label label-info"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;<%= session.email||'xxxxxxx@qq.com' %></span>
+            <button type="button" class="btn btn-primary" style="margin-top:20px;">保存更改</button>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="other">
+        暂未开发
+    </div>
+  </div>
