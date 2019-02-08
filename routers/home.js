@@ -79,7 +79,7 @@ router.get('/', async(ctx, next)=>{
         await userModel.findUserByName(ctx.session.username).then(res=>{
             ctx.session.id = res[0].Id;
             ctx.session.username=res[0].Username;
-            ctx.session.avator = res[0].Avatar;
+            ctx.session.avatar = res[0].Avatar;
         })
     }
     await ctx.render('home', {
@@ -206,7 +206,7 @@ router.post('/addShopCarts', async(ctx, next) => {
 router.get('/hotGoods',async(ctx,next)=>{
     const querystring=ctx.request.query
     let typeId=querystring.typeId?querystring.typeId:-1
-    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}// 商品详情 // 默认第一页
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'',name:'hotGoods'}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,1,undefined)
     await ctx.render('other/hotGoods',{
         goods:goods,
@@ -221,7 +221,7 @@ router.get('/memberGoods',async(ctx,next)=>{
     const querystring=ctx.request.query
     let typeId=querystring.typeId?querystring.typeId:-1
     // 查找会员商品
-    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:''}// 商品详情 // 默认第一页
+    goods={Data:[],count:0,typeId:typeId,pageNo:0,pageSize:8,searchName:'',name:'memberGoods'}// 商品详情 // 默认第一页
     await commonFunc(querystring,goods,undefined,1)
     await getLabels();
     await ctx.render('other/memberGoods',{
@@ -256,7 +256,7 @@ router.get('/search',async(ctx,next)=>{
     const pageNo=querystring.pageNo?parseInt(querystring.pageNo):0
     let typeId=querystring.typeId?querystring.typeId:-1
     let searchName=querystring.searchName?decodeURI(querystring.searchName):''
-    let search={Data:[],typeId:typeId,count:0,pageNo:pageNo,pageSize:8,searchName:searchName}// 商品详情
+    let search={Data:[],typeId:typeId,count:0,pageNo:pageNo,pageSize:8,searchName:searchName,name:'search'}// 商品详情
     
     await getLabels();
 
@@ -353,8 +353,8 @@ router.post('/orderIsLogin', async(ctx, next) => {
         msg:'请先登录！'
     };
     const params=ctx.request.body
-    const bookId=params.bookId;
-    const quantity=params.quantity;
+    const bookId=params.BookId;
+    const quantity=params.Quantity;
     // 判断是否登陆注册
     if(ctx.session.username){
         if(bookId&&quantity){
@@ -370,29 +370,50 @@ router.post('/orderIsLogin', async(ctx, next) => {
 router.get('/confirmOrder', async(ctx, next) => {
     await getLabels();
     const params=ctx.request.query
-    const bookId=params.bookId;
-    const quantity=params.quantity;
-    let goodDetail={}
-    await userModel.selectBookById(bookId).then(res=>{
-        goodDetail=res[0];
-        goodDetail.Quantity=quantity
+    const ids=params.ids;
+    const shopcart=JSON.parse(params.shopcart);
+    let orderList=[]
+    let addressList=[]
+    const UserId=ctx.session.id;
+    // ids 数组的商品集合
+    await userModel.selectBookById(ids).then(res=>{
+        orderList=res
+    }).catch()
+    let sum=0;
+    for(let i=0,j=orderList.length;i<j;i++){
+        const bid=orderList[i].BookId
+        for(let j=0,q=orderList.length;j<q;j++){
+            let ss=shopcart[j]
+            if(bid==ss.BookId){
+                orderList[i].Quantity=ss.Quantity
+                sum+=parseFloat(ss.Quantity*orderList[i].Price)
+                break;
+            }
+        }
+        
+    }
+    // 根据id查询地址
+    await userModel.selectUserAddress(UserId).then(res=>{
+        addressList=res
     }).catch()
     await ctx.render('other/confirmOrder',{
-        goodDetail:goodDetail,
+        sum:sum,
         session:ctx.session,
+        orderList:orderList,
         navArray: switchNav(ctx.path),
+        addressList:addressList,
         labels:labels,
         footers:footers
     })
 })
 //关于
-router.get('/about',async(ctx,next)=>{
-    await ctx.render('other/about',{
-        session:ctx.session,
-        navArray: switchNav(ctx.path),
-        footers:footers
-    })
-})
+// router.get('/about',async(ctx,next)=>{
+//     await ctx.render('other/about',{
+//         session:ctx.session,
+//         navArray: switchNav(ctx.path),
+//         footers:footers
+//     })
+// })
 router.get('/test',async(ctx,next)=>{
     await ctx.render('test')
 })

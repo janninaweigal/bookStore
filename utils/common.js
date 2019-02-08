@@ -26,7 +26,7 @@ export function switchNav(router) {
         {
             name:'我的',
             active:false,
-            router:'/about'
+            router:'/personal'
         }
     ]
     // 如果router有值，则修改成激活
@@ -116,8 +116,8 @@ export async function alipay(totalAmount,subject, body){
     const formData = new AlipayFormData();
     // 调用 setMethod 并传入 get，会返回可以跳转到支付页面的 url
     formData.setMethod('get');
-    formData.addField('returnUrl', `http://${config.HOST}:${config.port}/callback`);
-    formData.addField('notifyUrl', `http://${config.HOST}:${config.port}/callback`);
+    formData.addField('returnUrl', `${config.HOST}${config.port}/order/callback`);
+    formData.addField('notifyUrl', `${config.HOST}${config.port}/order/callback`);
     formData.addField('bizContent', {
         outTradeNo: new Date().getTime(),
         productCode: 'FAST_INSTANT_TRADE_PAY',

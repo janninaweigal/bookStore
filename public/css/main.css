@@ -98,12 +98,38 @@ ul.navbar-nav li:hover span{
 .personInfo .profile .label-danger{
     margin-bottom:20px;
 }
+/* 确认订单 */
+.addressBox{
+    display:flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+.itemBox{
+    border-bottom:1px solid #337ab7;
+    padding:10px 0px;
+}
+.itemBox:last-child{
+    border-bottom:none;
+}
+.addressBox .nowrap{
+    white-space: nowrap;
+}
+.address_middle{
+    padding-right:10px;
+    width:100%;
+    border-right:2px solid #337ab7;
+}
+.rightEdit{
+    margin-left:10px;
+}
 /*页脚*/
 .footer{
     /* position: fixed;
     left:0px;
     bottom:0px;
     width:100%; */
+    width:100%;
     padding: 40px 20px;
     color: #C0E1FF;
     text-align: center;

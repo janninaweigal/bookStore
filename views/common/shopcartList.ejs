@@ -26,7 +26,7 @@
                                     <button type="button" class="btn btn-default addQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </button>
-                                    <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
+                                    <input type="text" data-BookId="<%= item.BookId %>" name="quantity" onkeypress="return event.keyCode>=48&&event.keyCode<=57" placeholder="请输入数量" maxlength="10" class="form-control text-center" value="<%= item.Quantity %>">
                                     <button type="button" class="btn btn-default reduceQuantity" aria-label="Bold">
                                         <span class="glyphicon glyphicon-minus"></span>
                                     </button>

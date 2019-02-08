@@ -35,7 +35,7 @@ router.put('/personal/updateImg', async(ctx,next)=>{
             await userModel.updateUserImg(fileName,id).then(res=>{
                 result.flag=true;
                 result.msg='个人信息更新成功'
-                ctx.session.avator = fileName;
+                ctx.session.avatar = fileName;
             }).catch(err => {
                 console.log(err)
                 result.flag=false;

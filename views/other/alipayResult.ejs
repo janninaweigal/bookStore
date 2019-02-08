@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>支付结果</title>
+        <link rel="icon" href="images/favicon.ico" type="image/ico" />
+        <style>
+            *{margin:0px;padding:0px;}
+            a{text-decoration:none;}
+            .center-block{
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                align-items:center;
+                padding: 20px 0px;
+            }
+            .center-block .payResult{
+                margin:10px 0px;
+
+            }
+            .text-primary {
+                color: #337ab7;
+            }
+            .text-danger {
+                color: #a94442;
+            }
+        </style>
+    </head>
+<body>
+    <div class="center-block">
+        <img src="/images/<%= result?'paySuccess':'payError' %>.png"/>
+        <span class="payResult <%= result?'text-primary':'text-danger' %>"><%= result?'支付成功':'支付失败' %></span>
+        <a href="/">返回首页</a>
+    </div>
+</body>
+</html>

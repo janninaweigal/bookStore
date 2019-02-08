@@ -182,8 +182,8 @@ $(function () {
                                 <div class="thumbnail">
                                     <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
                                     <div class="caption">
-                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.Id}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
-                                        <a href="/goodsDetail?id=${itemSelf.Id}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
+                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.BookId}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
+                                        <a href="/goodsDetail?id=${itemSelf.BookId}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
                                     </div>
                                 </div>
                             </div>`
@@ -212,8 +212,7 @@ $(function () {
             }, 2000
         );
     }
-    function showTips2(title, body,footer) {
-        var el='#myModalCommon1'
+    function showTips2(el,title, body,footer) {
         showModalOpen(el);
         $(el+' .modal-title').text(title);
         $(el+' .modal-body').html(body);
@@ -246,7 +245,7 @@ $(function () {
                             var item=data[i]
                             str+=`<div class="media">
                                 <div class="media-left">
-                                    <img class="media-object" alt="${item.Username}" src="images/${item.Avatar}" style="width: 64px; height: 64px;">
+                                    <img class="media-object" alt="${item.Username}" src="${item.Avatar}" style="width: 64px; height: 64px;">
                                 </div>
                                 <div class="media-body">
                                     <h4 class="media-heading">${item.Username}</h4>
@@ -260,9 +259,9 @@ $(function () {
                         }
                         // 先清空原有数据
                         that.parent().nextAll().remove();
-                        showTips('用户评论','评论成功~')
                         // 添加新数据
                         that.parent().after(str)
+                        showTips('用户评论','评论成功~')
                     }else if(res.code=="no-login"){
                         showTips('用户评论','请先登录后评论！！')
                     }else{
@@ -316,7 +315,7 @@ $(function () {
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
         <button type="button" class="btn btn-primary updateShopcart" data-obj='${param}'>保存</button>
       </div>`
-        showTips2("编辑购物车", body,footer)
+        showTips2('#myModalCommon1',"编辑购物车", body,footer)
         // 编辑购物车的保存
         $("#myModalCommon1 .updateShopcart").click(function(){
             var obj=JSON.parse($(this).attr('data-obj'))
@@ -347,8 +346,8 @@ $(function () {
             })
         })
     });
-    
-    $("#shopcarts .btn-danger").click(function(){
+    // 删除购物车
+    $("#shopcarts .table .btn-danger").click(function(){
         var that=$(this)
         var id=that.attr("data-id");
         if(id){
@@ -373,6 +372,32 @@ $(function () {
             showTips('购物车','购物车参数有误')
         }
     });
+    
+    // 支付
+    $("#shopcarts").submit(function(e){
+        e.preventDefault();
+        var shopcarts=$(this).serializeArray();
+        var array=$(this).find('input[name="quantity"]')
+        var data=[]
+        var ids=[]// id数组集合
+        $.each(shopcarts, function (index,item) {
+            var id=parseInt(array.eq(index).attr('data-BookId'));
+            ids.push(id)
+            data.push({
+                BookId:id,
+                Quantity:parseInt(item.value)
+            })
+        })
+        window.location.href=["/confirmOrder?ids=",ids.join(','),'&shopcart=',JSON.stringify(data)].join('')
+    })
+    // json数组转对象
+    function arrayToJson(array){
+        var json={}
+        $.each(array, function (index,item) {
+            json[item.name]=item.value
+        })
+        return json
+    }
     // 购物车的总和
     function getTotalPrice(){
         var that=$('#shopcarts .table tbody tr')
@@ -478,17 +503,15 @@ $(function () {
         var bookId=getQueryString("id");
         if(bookId){
             var quantity=$(this).parent().prevAll().eq(3).find("input[type='text']").val()||0;
+            var data={BookId:bookId,Quantity:quantity}
             $.ajax({
                 url: "/orderIsLogin",
                 type: 'POST',
-                data:{
-                    bookId,
-                    quantity
-                },
+                data:data,
                 cache: false,
                 success: function (res) {
                     if(res.flag){
-                        window.location.href=["/confirmOrder?bookId=",bookId,'&quantity=',quantity].join('')
+                        window.location.href=["/confirmOrder?ids=",bookId,'&shopcart=',JSON.stringify([data])].join('')
                     }else{
                         showTips('购买',res.msg)
                     }
@@ -502,6 +525,7 @@ $(function () {
         }
     })
     $('.addressOrder').click(function(){
+        var len=$('.addressList').children().length
         var body=`<form class="form-horizontal">
         <div class="form-group">
           <label for="name" class="col-sm-2 control-label">收货人</label>
@@ -512,20 +536,195 @@ $(function () {
         <div class="form-group">
           <label for="address" class="col-sm-2 control-label">收货地址</label>
           <div class="col-sm-10">
-            <input type="textarea" class="form-control" id="address">
+            <textarea class="form-control" rows="3" id="address"/>
           </div>
         </div>
         <div class="form-group">
           <label for="phone" class="col-sm-2 control-label">电话号码</label>
           <div class="col-sm-10">
-            <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" class="form-control" id="phone">
+            <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" maxlength="11" class="form-control" id="phone">
           </div>
-        </div></form>`
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" ${len==0?'checked disabled':''}> 是否为默认地址
+                </label>
+            </div>
+            </div>
+        </div>
+        </form>`
         var footer=`<div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary">保存</button>
+            <button type="button" class="btn btn-primary saveAddress">保存</button>
         </div>`
-        showTips2("选择地址", body,footer)
+        showTips2('#confirmOrder',"选择地址", body,footer)
+        // 确认订单的 收货地址
+        $("#confirmOrder .saveAddress").click(function(){
+            // 保存地址
+            var name=$("#confirmOrder").find("input[id='name']").val()
+            var address=$("#confirmOrder").find("textarea[id='address']").val()
+            var phone=$("#confirmOrder").find("input[id='phone']").val()
+            var isDefault=$("#confirmOrder").find("input[type='checkbox']").is(':checked')?'1':'0'
+            if(name&&address&&phone){
+                // 信息填写完成
+                $.ajax({
+                    url: "/admin/address",
+                    type: 'POST',
+                    data: {
+                        name:name,
+                        address:address,
+                        phone:phone,
+                        isDefault:isDefault
+                    },
+                    cache: false,
+                    success: function (res) {
+                        if(res){
+                            showModalHide('#confirmOrder')
+                            alert('保存成功~')
+                            location.replace(location)
+                        }else{
+                            alert('地址保存失败')
+                        }
+                    },
+                    fail: function () {
+                        alert('地址保存失败')
+                    }
+                })
+            }else{
+                alert('信息请填写完整！')
+            }
+        })
+    })
+    // 编辑地址
+    $('.addressList .editAddress').click(function(){
+        var str=$(this).attr("data-obj")
+        var obj=stringToObj(str);
+        var body=`<form class="form-horizontal">
+        <div class="form-group">
+          <label for="name" class="col-sm-2 control-label">收货人</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" value="${obj.Name}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address" class="col-sm-2 control-label">收货地址</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" rows="3" id="address">${obj.Address}</textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="phone" class="col-sm-2 control-label">电话号码</label>
+          <div class="col-sm-10">
+            <input type="text" onkeypress="return event.keyCode>=48&&event.keyCode<=57" maxlength="11" class="form-control" id="phone" value="${obj.Phone}">
+          </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" ${obj.IsDefault=='1'?'checked':''}> 是否为默认地址
+                </label>
+            </div>
+            </div>
+        </div>
+        </form>`
+        var footer=`<div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary updateAddress">保存</button>
+        </div>`
+        showTips2('#confirmOrder',"选择地址", body,footer)
+        // 确认订单的 收货地址
+        $("#confirmOrder .updateAddress").click(function(){
+            // 保存地址
+            var Id=obj.Id;
+            var name=$("#confirmOrder").find("input[id='name']").val()
+            var address=$("#confirmOrder").find("textarea[id='address']").val()
+            var phone=$("#confirmOrder").find("input[id='phone']").val()
+            var isDefault=$("#confirmOrder").find("input[type='checkbox']").is(':checked')?1:0
+            if(name&&address&&phone){
+                // 信息填写完成
+                $.ajax({
+                    url: "/admin/address/"+Id,
+                    type: 'PUT',
+                    data: {
+                        Id:Id,
+                        name:name,
+                        address:address,
+                        phone:phone,
+                        isDefault:isDefault
+                    },
+                    cache: false,
+                    success: function (res) {
+                        if(res){
+                            showModalHide('#confirmOrder')
+                            alert('修改成功~')
+                            location.replace(location)
+                        }else{
+                            alert('地址修改失败')
+                        }
+                    },
+                    fail: function () {
+                        alert('地址修改失败')
+                    }
+                })
+            }else{
+                alert('信息请填写完整！')
+            }
+        })
+    })
+    // 删除地址
+    $('.addressList .editAddress').next().click(function(){
+        var that=$(this)
+        var id=$(this).attr("data-id")
+        $.ajax({
+            url: "/admin/address/"+id,
+            type: 'DELETE',
+            cache: false,
+            success: function (res) {
+                if(res){
+                    alert('删除成功')
+                    that.parent().parent().remove(); 
+                }else{
+                    alert('删除失败')
+                }
+            },
+            fail: function () {
+                alert('删除失败')
+            }
+        })
+    })
+    // 蚂蚁金服 支付
+    $('.paymoney').click(function(){
+        const ids=getQueryString('ids');
+        const shopcart=getQueryString('shopcart');
+        var len=$('.addressList').children().length
+        if(len==0){
+            alert('请选择地址')
+        }else if(ids&&shopcart){
+            $.ajax({
+                url: "/order/alipay",
+                type: 'POST',
+                data:{
+                    ids,
+                    shopcart
+                },
+                cache: false,
+                success: function (res) {
+                    if(res.flag){
+                        window.location.href=res.url
+                    }else{
+                        alert('支付失败')
+                    }
+                },
+                fail: function () {
+                    alert('支付失败')
+                }
+            })
+        }else{
+            alert('地址参数错误')
+        }
     })
     // 公用开启和关闭
     function showModalOpen(str){

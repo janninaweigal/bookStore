@@ -20,7 +20,7 @@
                 <% }else{ %>
                     <li>
                 <% } %>
-                    <a href="<%= goods.pageNo==0?'javascript:void(0)':'/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)-1)%>" aria-label="Previous">
+                    <a href="<%= goods.pageNo==0?'javascript:void(0)':'/'+goods.name+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)-1)%>" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -30,14 +30,14 @@
                     <% }else{ %>
                         <li>
                     <% } %>
-                    <a href="<%= '/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+ i %>"><%= i+1 %></a></li>
+                    <a href="<%= '/'+goods.name+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+ i %>"><%= i+1 %></a></li>
                 <% } %>
                 <% if (goods.pageNo==(goods.count-1)) { %>
                     <li class="disabled">
                 <% }else{ %>
                     <li>
                 <% } %>
-                    <a href="<%= goods.pageNo==(goods.count-1)?'javascript:void(0)':'/'+goods.searchName+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)+1)%>" aria-label="Next">
+                    <a href="<%= goods.pageNo==(goods.count-1)?'javascript:void(0)':'/'+goods.name+'?'+(goods.typeId?'typeId='+goods.typeId+'&':'')+'pageNo='+(parseInt(goods.pageNo)+1)%>" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
