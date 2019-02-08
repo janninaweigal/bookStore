@@ -10,14 +10,25 @@ router.get('/admin',async(ctx,next)=>{
     const title='admin.ejs'
     // 判断是否登陆注册
     if(userId){
-        await ctx.render('admin',{
-            session: ctx.session,
-            menus:menus,
-            title:title
-        })
+        let flag=false;
+        await userModel.findUserById(userId).then(res=>{
+            if(res.length==1&&res[0].IsAdmin==1){
+                flag=true;
+            }
+        }).catch(()=>{})
+        if(flag){
+            await ctx.render('admin',{
+                session: ctx.session,
+                menus:menus,
+                title:title
+            })
+        }else{
+            ctx.redirect('/');
+        }
     }else{
         ctx.redirect('/');
     }
+    
 })
 // 用户信息
 router.get('/admin/users',async(ctx,next)=>{

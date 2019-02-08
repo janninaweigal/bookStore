@@ -77,9 +77,13 @@ router.get('/', async(ctx, next)=>{
     // 判断是否登陆注册
     if(ctx.session.username){
         await userModel.findUserByName(ctx.session.username).then(res=>{
-            ctx.session.id = res[0].Id;
-            ctx.session.username=res[0].Username;
-            ctx.session.avatar = res[0].Avatar;
+            if(res.length==1){
+                ctx.session.id = res[0].Id;
+                ctx.session.username=res[0].Username;
+                ctx.session.avatar = res[0].Avatar;
+            }else{
+                ctx.session = null;
+            }
         })
     }
     await ctx.render('home', {

@@ -3,14 +3,35 @@ var userModel = require('../../lib/mysql.js')
 import {getMenu} from '../../utils/admin'//后台的方法集合
 // 用户地址
 router.get('/admin/address',async(ctx,next)=>{
+    const query=ctx.query
+    const searchName=query.searchName
     const userId=ctx.session.id
     const menus=getMenu('用户管理','/admin/address')
     const title='address.ejs'
+    const pageNo=query.pageNo?parseInt(query.pageNo):0
+    let table={
+        Data:[],count:0,pageNo:pageNo,pageSize:10,globalName:'',url:'admin/address'
+    }
     if(!userId) ctx.redirect('/');//不登陆跳转到主页
+    if(searchName)table.globalName=decodeURI(searchName)
+    // 查询所有的地址长度
+    await userModel.selectAllUserAddressLength(table.globalName).then(res=>{
+        table.count=Math.ceil(res[0].count/table.pageSize)
+        if(table.pageNo<=0)table.pageNo=0
+        else if(table.pageNo>=table.count)table.pageNo=table.count-1
+    }).catch(()=>{})
+    const No=table.pageNo*table.pageSize
+    // 查询所有的地址
+    await userModel.selectAllUserAddress(table.globalName,No,table.pageSize).then(res=>{
+        if(res){
+            table.Data=res
+        }
+    }).catch(()=>{})
     await ctx.render('admin',{
         session: ctx.session,
         menus:menus,
-        title:title
+        title:title,
+        table:table
     })
 })
 // 新增用户信息

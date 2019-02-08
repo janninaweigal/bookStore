@@ -28,10 +28,14 @@ router.post('/login', async(ctx, next) => {
         })
         if(result.flag){
             await userModel.findUserByName(username).then(res=>{
-                ctx.session.id = res[0].Id;
-                ctx.session.username=res[0].Username;
-                ctx.session.avatar = res[0].Avatar;
-                ctx.session.email = res[0].Email;
+                console.log(res)
+                if(res.length==1){
+                    ctx.session.id = res[0].Id;
+                    ctx.session.username=res[0].Username;
+                    ctx.session.avatar = res[0].Avatar;
+                    ctx.session.email = res[0].Email;
+                    ctx.session.IsAdmin = res[0].IsAdmin;
+                }
             }).catch(err => {
                 result.msg='出现错误！！'
             })

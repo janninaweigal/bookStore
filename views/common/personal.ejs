@@ -12,7 +12,8 @@
             <div class="imgTip">点击头像进行上传</div>
             <span class="label label-danger"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;<%= session.username||'某某' %></span>
             <span class="label label-info"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;<%= session.email||'xxxxxxx@qq.com' %></span>
-            <button type="button" class="btn btn-primary" style="margin-top:20px;">保存更改</button>
+            <button type="button" class="btn btn-primary" style="margin:20px 0px;">保存更改</button>
+            <%- session.IsAdmin==1?'<a href="/admin">进入后台管理界面</a>':'' %>
         </div>
     </div>
     <div role="tabpanel" class="tab-pane" id="other">

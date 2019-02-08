@@ -25,7 +25,9 @@ router.post('/register', async(ctx, next) => {
         await userModel.insertUser([username, md5(password + 'asd&$BH&*'),email ]).then(res=>{
             ctx.session.id = res.insertId;
             ctx.session.username=username;
-            ctx.session.avatar = 'images/default.jpg';
+            ctx.session.avatar = '/images/default.jpg';
+            ctx.session.email = email;
+            ctx.session.IsAdmin = 0;
             result={
                 flag:true,
                 msg:'用户名'+username+',注册成功！'

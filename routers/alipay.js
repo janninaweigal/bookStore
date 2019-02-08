@@ -78,6 +78,12 @@ router.get('/order/callback', async(ctx, next) => {
         }).catch((res)=>{
             console.log(res)
         })
+        // 清空购物车
+        await userModel.deleteShopcartsByUserId(UserId).then(res=>{
+            
+        }).catch((res)=>{
+            console.log(res)
+        })
     }
     await ctx.render('other/alipayResult',{
         result:result
