@@ -5,10 +5,10 @@ const config = {
     //数据库配置
     database: {
         DATABASE: 'nodesql',
-        USERNAME: 'linbin',
-        PASSWORD: 'jannineweigel@@',
+        USERNAME: 'root',
+        PASSWORD: 'root',
         PORT: '3306',
-        HOST: '111.230.236.23'
+        HOST: '127.0.0.1'
     }
 }
 
