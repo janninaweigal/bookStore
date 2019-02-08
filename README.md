@@ -3,6 +3,7 @@
 # 执行步骤
 * 1.mysql新建数据库，运行nodesql.sql 脚本文件<br>
 * 2.config目录下的default.js 配置mysql参数<br>
+* 3.npm install安装依赖<br>
 * 3.最后，运行node index<br>
 <br>
 技术栈：koa2-ejs-jquery混合原生js-bootstrap-mysql
