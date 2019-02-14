@@ -35,7 +35,6 @@ CREATE TABLE `Books`  (
   `PublishTime` datetime(0) DEFAULT CURRENT_TIMESTAMP COMMENT '出版时间',
   `PublishCompany` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '人民出版社' COMMENT '出版社',
   `CollectionNum` int(11) DEFAULT 0 COMMENT '用户收藏数量',
-  `IsToCart` int(1) UNSIGNED ZEROFILL DEFAULT 0 COMMENT '是否加入购物车',
   `IsMember` int(1) DEFAULT 0 COMMENT '是否会员书',
   `IsHot` int(1) DEFAULT 0 COMMENT '是否热门书',
   PRIMARY KEY (`Id`) USING BTREE

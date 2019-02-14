@@ -6,8 +6,8 @@ let labels=[]
 // 查找
 let goods={Data:[],count:0,typeId:-1,pageNo:0,pageSize:8,searchName:''}
 // 获取相应标签的所有图书列表
-async function getList(data,Id){
-    await userModel.selectBooksByTypeId(Id).then(res=>{
+async function getList(data,Id,Field){
+    await userModel.selectBooksByTypeId(Id,Field).then(res=>{
         if(res){
             data.Data=res
         }
@@ -101,7 +101,7 @@ router.get('/', async(ctx, next)=>{
 // 商品详情
 router.get('/goodsDetail',async(ctx,next)=>{
     const BookId=ctx.request.query.id?ctx.request.query.id:1;
-    let goodsDetail={flag:false}// 商品详情和评论
+    let goodsDetail={flag:false,isCollection:false}// 商品详情和评论
     let typeId=ctx.request.query.typeId?ctx.request.query.typeId:-1
     goods.typeId=typeId
     await getLabels();
@@ -116,6 +116,15 @@ router.get('/goodsDetail',async(ctx,next)=>{
         }).catch(()=>{
             goodsDetail={}
         })
+        // 是否收藏
+        if(ctx.session.username){
+            const userId=ctx.session.id
+            await userModel.selectCollection([userId,BookId]).then(res=>{
+                if(res&&res[0].CollectionFlag==1){
+                    goodsDetail.isCollection=true
+                }
+            }).catch(()=>{})
+        }
         goodsDetail.flag=true
     }
     await ctx.render('other/goodsDetail',{
@@ -161,6 +170,50 @@ router.post('/comment', async(ctx, next) => {
         }).catch((res)=>{
             result.code="error"
         })
+    }
+    ctx.body = result;
+})
+// 加入收藏  取消收藏
+router.get('/addCollection', async(ctx, next) => {
+    const query=ctx.request.query;
+    const BookId =query.BookId;
+    const CollectionFlag=query.flag
+    const result={
+        code:'no-login'
+    }
+    if(ctx.session.username){
+        // 收藏
+        const UserId=ctx.session.id
+        const collectionId=ctx.session.collectionId
+        if(collectionId){
+            // 更新
+            await userModel.updateCollection([CollectionFlag,collectionId]).then(res=>{
+                if(res.affectedRows==1){
+                    result.code='success'
+                }
+            }).catch((res)=>{
+                result.code="error"
+            })
+            // 更改books表的collectionNum
+            const num=(CollectionFlag==1?'CollectionNum+1':'CollectionNum-1')
+            await userModel.updateBookCollectionNum(num,BookId).then(res=>{
+                if(res.affectedRows==1){
+                    result.code='success'
+                }
+            }).catch((res)=>{
+                result.code="error"
+            })
+        }else{
+            // 添加
+            await userModel.insertCollection([UserId,BookId,CollectionFlag]).then(res=>{
+                if(res.affectedRows==1){
+                    result.code='success'
+                    ctx.session.collectionId=res.insertId;
+                }
+            }).catch((res)=>{
+                result.code="error"
+            })
+        }
     }
     ctx.body = result;
 })

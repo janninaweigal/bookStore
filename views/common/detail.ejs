@@ -38,6 +38,7 @@
                 </div>
                 <p><h3 class="text-primary text-right">总价：<mark class="totalPrice"><%= goodsDetail.Price %></mark></h3></p>
                 <p class="text-right margin-top-15">
+                    <button type="button" class="btn btn-success btn-lg addCollection"><span class="glyphicon <%= goodsDetail.isCollection?'glyphicon-star':'glyphicon-star-empty' %>" style="top:4px"></span>&nbsp;加入收藏</button>
                     <button type="button" class="btn btn-primary btn-lg addShopCarts"><span class="glyphicon glyphicon-heart-empty" style="top:4px"></span>&nbsp;加入购物车</button>
                     <button type="button" class="btn btn-danger btn-lg alipay" style="padding-left:40px;padding-right:40px;">购买&nbsp;<span class="glyphicon glyphicon-phone" style="top:2px"></span></button>
                 </p>

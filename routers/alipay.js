@@ -62,11 +62,21 @@ router.get('/order/callback', async(ctx, next) => {
         const len=shopcart.length
         if(len==1){
             data='('+[UserId,parseInt(shopcart[0].BookId),UserAddressId,Seller_Id,Out_Trade_No,Trade_No,shopcart[0].Quantity,Total_Amount].join(',')+')'
+            // 销售量增加，数量减少
+            await userModel.updateBookSaleNum('SaleNum+1','Quantity-'+shopcart[0].Quantity,parseInt(shopcart[0].BookId)).then(res=>{
+                if(res.affectedRows==1){
+                    result=true
+                }
+            }).catch()
         }else{
             for(let i=0,j=len;i<j;i++){
                 const obj=shopcart[i]
                 const item='('+[UserId,parseInt(obj.BookId),UserAddressId,Seller_Id,Out_Trade_No,Trade_No,obj.Quantity,Total_Amount].join(',')+')'
                 data.push(item)
+                // 销售量增加，数量减少
+                await userModel.updateBookSaleNum('SaleNum+1','Quantity-'+obj.Quantity,parseInt(obj.BookId)).then(res=>{
+                    result=true
+                }).catch()
             }
             data=data.join(',')
         }

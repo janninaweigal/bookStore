@@ -6,7 +6,7 @@ const config = {
     database: {
         DATABASE: 'nodesql',
         USERNAME: 'root',
-        PASSWORD: 'root',
+        PASSWORD: 'jannina@@',
         PORT: '3306',
         HOST: '127.0.0.1'
     }

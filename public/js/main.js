@@ -164,6 +164,16 @@ $(function () {
             showTips('用户登录','请填写好信息！！')
         }
     });
+    // 排序
+    $('.orderByBox .glyphicon').click(function(){
+        var that=$(this)
+        var flag=that.prop("className").indexOf('glyphicon-arrow-up')!=-1;
+        if(flag){
+            that.removeClass("glyphicon-arrow-up").addClass('glyphicon-arrow-down');
+        }else{
+            that.removeClass("glyphicon-arrow-down").addClass('glyphicon-arrow-up');
+        }
+    })
     $('.bookList .bookTypeLink').click(function(){
         var that=$(this);
         var id=that.attr('data-id');
@@ -182,7 +192,7 @@ $(function () {
                                 <div class="thumbnail">
                                     <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
                                     <div class="caption">
-                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.BookId}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsToCart==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
+                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.BookId}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsHot==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
                                         <a href="/goodsDetail?id=${itemSelf.BookId}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
                                     </div>
                                 </div>
@@ -438,6 +448,37 @@ $(function () {
         that.val(num);
         $('.totalPrice').text(parseFloat($('.Price').text())*num)
         getTotalPrice()
+    })
+    // 加入收藏
+    $('.addCollection').click(function(){
+        var bookId=getQueryString("id");
+        if(bookId){
+            var that=$(this);
+            var flag=that.find('.glyphicon').prop("className").indexOf('glyphicon-star-empty')!=-1;
+            $.ajax({
+                url: "/addCollection?BookId="+bookId+"&flag="+(flag?1:0),
+                type: 'GET',
+                cache: false,
+                success: function (res) {
+                    if(res.code=="success"){
+                        if(flag){
+                            that.find('.glyphicon').removeClass("glyphicon-star-empty").addClass('glyphicon-star');
+                            showTips('收藏','收藏成功')
+                        }else{
+                            that.find('.glyphicon').removeClass("glyphicon-star").addClass('glyphicon-star-empty');
+                            showTips('收藏','取消收藏')
+                        }
+                    }else{
+                        showTips('收藏','请先登录！')
+                    }
+                },
+                fail: function () {
+                    showTips('收藏','请先登录！')
+                }
+            })
+        }else{
+            showTips('收藏','地址栏参数错误')
+        }
     })
     // 加入购物车addShopCarts
     $('.addShopCarts').click(function (){
