@@ -10,7 +10,10 @@ async function getList(data,Id,Field){
     await userModel.selectBooksByTypeId(Id,Field).then(res=>{
         if(res){
             data.Data=res
+            data.flag=true;
         }
+    }).catch(()=>{
+        data.flag=false;
     })
 }
 // 标签组
@@ -139,10 +142,17 @@ router.get('/goodsDetail',async(ctx,next)=>{
 // 首页tab
 router.post('/home', async(ctx, next) => {
     let data={flag:false},
-        type = ctx.request.query.type?ctx.request.query.type:1
+        type = ctx.request.query.type?ctx.request.query.type:1;
+    const params=ctx.request.body
+    const orderBy=params.orderBy
+    const ascending=((params.ascending || true) ?'ASC':'DESC')
     if(type){
-        await getList(data,type);
-        data.flag=true;
+        if(orderBy&&ascending){
+            const field=[" ORDER BY ",orderBy, ' ', ascending]
+            await getList(data,type,field);
+        }else{
+            await getList(data,type);
+        }
     }
     ctx.body = data;
 })

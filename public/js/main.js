@@ -168,10 +168,19 @@ $(function () {
     $('.orderByBox .glyphicon').click(function(){
         var that=$(this)
         var flag=that.prop("className").indexOf('glyphicon-arrow-up')!=-1;
+        var orderBy=that.attr("order-By");
+        var json={
+            orderBy:orderBy,
+            ascending:!flag
+        }
+        console.log(json)
         if(flag){
+            // 降序
             that.removeClass("glyphicon-arrow-up").addClass('glyphicon-arrow-down');
         }else{
+            // 升序
             that.removeClass("glyphicon-arrow-down").addClass('glyphicon-arrow-up');
+
         }
     })
     $('.bookList .bookTypeLink').click(function(){
