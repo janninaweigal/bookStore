@@ -145,10 +145,10 @@ router.post('/home', async(ctx, next) => {
         type = ctx.request.query.type?ctx.request.query.type:1;
     const params=ctx.request.body
     const orderBy=params.orderBy
-    const ascending=((params.ascending || true) ?'ASC':'DESC')
+    const ascending=((params.ascending=='true') ?'ASC':'DESC')
     if(type){
         if(orderBy&&ascending){
-            const field=[" ORDER BY ",orderBy, ' ', ascending]
+            const field=[" ORDER BY ",orderBy, ' ', ascending].join('')
             await getList(data,type,field);
         }else{
             await getList(data,type);
@@ -182,6 +182,22 @@ router.post('/comment', async(ctx, next) => {
         })
     }
     ctx.body = result;
+})
+// 查找用户收藏的商品列表
+router.get('/findUserCollection', async(ctx, next) => {
+    const result ={
+        flag:false,
+        Data:[]
+    }
+    if(ctx.session.username){
+        // 所有用户的收藏商品
+        const UserId=ctx.session.id
+        await userModel.selectCollectionGoods(UserId).then(res=>{
+            result.Data=res;
+            result.flag=true
+        }).catch(()=>{})
+    }
+    ctx.body=result
 })
 // 加入收藏  取消收藏
 router.get('/addCollection', async(ctx, next) => {

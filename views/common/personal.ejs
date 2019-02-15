@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">个人信息</a></li>
-    <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">其他</a></li>
+    <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">收藏商品</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -16,7 +16,38 @@
             <%- session.IsAdmin==1?'<a href="/admin">进入后台管理界面</a>':'' %>
         </div>
     </div>
-    <div role="tabpanel" class="tab-pane" id="other">
-        暂未开发
+    <div role="tabpanel" class="tab-pane text-center" id="other">
+        <% if (collection.length!=0) { %>
+            <table class="table" style="margin-top:20px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>商品图片</th>
+                            <th>商品名称</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% collection.forEach(function(item,index){ %>
+                            <tr>
+                                <th scope="row"><%= index+1 %></th>
+                                <td>
+                                    <img src="<%= item.BookPhoto %>" style="width:40px;height:40px;"/> 
+                                </td>
+                                <td width="150"><%= item.BookName %></td>
+                                <td><%= item.Price %></td>
+                                <td><%= item.Quantity %></td>
+                                <td>
+                                    <a href="/goodsDetail?id=<%= item.BookId %>" class="btn btn-primary" role="button">查看详情</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+        <% } else { %>
+            没有收藏的商品！！
+        <% } %>
     </div>
   </div>

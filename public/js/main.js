@@ -173,15 +173,32 @@ $(function () {
             orderBy:orderBy,
             ascending:!flag
         }
-        console.log(json)
-        if(flag){
-            // 降序
-            that.removeClass("glyphicon-arrow-up").addClass('glyphicon-arrow-down');
-        }else{
-            // 升序
-            that.removeClass("glyphicon-arrow-down").addClass('glyphicon-arrow-up');
-
-        }
+        var id =$(".bookList .bookTypeLink[style]").attr('data-id')
+        $.ajax({
+            url: "/home?type="+id,
+            type: 'POST',
+            data:json,
+            cache: false,
+            success: function (res) {
+                if(res.flag){
+                    var data=res.Data
+                    if(data){
+                        var str = getData(data)
+                        if(flag){
+                            // 降序
+                            that.removeClass("glyphicon-arrow-up").addClass('glyphicon-arrow-down');
+                        }else{
+                            // 升序
+                            that.removeClass("glyphicon-arrow-down").addClass('glyphicon-arrow-up');
+                        }
+                        $('.bookList .col-sm-6').remove();
+                        $('.bookList').append(str)
+                    }
+                }else{
+                    showTips('排序','失败')
+                }
+            }
+        })
     })
     $('.bookList .bookTypeLink').click(function(){
         var that=$(this);
@@ -194,20 +211,8 @@ $(function () {
                 if(res.flag){
                     var data=res.Data
                     if(data){
-                        var str=''
-                        for(var i=0;i<data.length;i++){
-                            var itemSelf=data[i]
-                            str+=`<div class="col-sm-6 col-md-3">
-                                <div class="thumbnail">
-                                    <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
-                                    <div class="caption">
-                                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.BookId}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsHot==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
-                                        <a href="/goodsDetail?id=${itemSelf.BookId}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
-                                    </div>
-                                </div>
-                            </div>`
-                        }
-                        $('.bookList .bookTypeLink').attr("style","")
+                        var str = getData(data)
+                        $('.bookList .bookTypeLink').removeAttr("style")
                         that.css("color","red")
                         $('.bookList .col-sm-6').remove();
                         $('.bookList').append(str)
@@ -218,6 +223,22 @@ $(function () {
             }
         })
     })
+    function getData(data){
+        var str=''
+        for(var i=0;i<data.length;i++){
+            var itemSelf=data[i]
+            str+=`<div class="col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <img src="${itemSelf.BookPhoto}" title="${itemSelf.BookName}" alt="${itemSelf.BookName}" width="100%">
+                    <div class="caption">
+                        <p>图书名称：<a href="/goodsDetail?id=${itemSelf.BookId}" title="${itemSelf.BookName}">${itemSelf.BookName.length>7?itemSelf.BookName.substring(0,7)+'...':itemSelf.BookName}</a><br/>${itemSelf.Name?"图书类型：<span class='text-danger'>"+itemSelf.Name+'</span><br/>':''}单价：${itemSelf.Price}&nbsp;&nbsp;&nbsp;数量：${itemSelf.Quantity}<br/>出版社：${itemSelf.PublishCompany}<br/>出版时间：${itemSelf.PublishTime}<br/>${itemSelf.IsHot==1?'热门商品':'普通商品'}<br/>${itemSelf.Describe}</p>
+                        <a href="/goodsDetail?id=${itemSelf.BookId}" class="btn btn-primary" role="button">${itemSelf.Name}<span class="glyphicon glyphicon-leaf"></span></a>
+                    </div>
+                </div>
+            </div>`
+        }
+        return str;
+    }
     // 公用方法
     function showTips(title, msg) {
         var el='#myModalCommon'

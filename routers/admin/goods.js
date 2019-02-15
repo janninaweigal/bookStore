@@ -42,7 +42,7 @@ router.post('/admin/goods',async(ctx,next)=>{
     const Price=parseFloat(params.Price)
     const PublishCompany=params.PublishCompany
     const Quantity=parseInt(params.Quantity)
-    const type=parseInt(params.type)
+    const type=params.type
     let flag=false;
     if(isCorrectParam(params)){
         let BookTypeId=-1

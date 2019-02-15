@@ -6,12 +6,21 @@ import { writePhotoFile,getFileName} from '../utils/common'
 //个人主页
 router.get('/personal', async(ctx,next)=>{
     let labels=[]
+    let collection=[]
     await userModel.selectBookType().then(result=>{
         labels= result
     }).catch(()=>{})
+    // 所有用户的收藏商品
+    const UserId=ctx.session.id
+    if(UserId){
+        await userModel.selectCollectionGoods(UserId).then(res=>{
+            collection=res;
+        }).catch(()=>{})
+    }
     await ctx.render('other/personal',{
         session:ctx.session,
         navArray: switchNav(ctx.path),
+        collection:collection,
         labels:labels,
         footers:footers
     })
