@@ -1,6 +1,7 @@
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">个人信息</a></li>
     <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">收藏商品</a></li>
+    <li role="presentation"><a href="#orderHistory" aria-controls="orderHistory" role="tab" data-toggle="tab">历史订单</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -48,6 +49,42 @@
                 </table>
         <% } else { %>
             没有收藏的商品！！
+        <% } %>
+    </div>
+    <div role="tabpanel" class="tab-pane text-center" id="orderHistory">
+        <% if (orderHistory.length!=0) { %>
+            <table class="table" style="margin-top:20px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>订单号</th>
+                            <th>商品名称</th>
+                            <th>商品图片</th>
+                            <th>收货人</th>
+                            <th>收货地址</th>
+                            <th>数量</th>
+                            <th>付款金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orderHistory.forEach(function(item,index){ %>
+                            <tr>
+                                <th scope="row"><%= index+1 %></th>
+                                <td width="80"><%= item.Trade_No %></td>
+                                <td width="100"><%= item.BookName %></td>
+                                <td>
+                                    <img src="<%= item.BookPhoto %>" style="width:40px;height:40px;"/> 
+                                </td>
+                                <td><%= item.receiver %></td>
+                                <td><%= item.receiverAddress %></td>
+                                <td><%= item.Quantity %></td>
+                                <td width="140">RMB：<%= item.Total_Amount %>(元)</td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+        <% } else { %>
+            没有历史订单！！
         <% } %>
     </div>
   </div>

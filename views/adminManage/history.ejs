@@ -1,14 +1,14 @@
 <div class="page-title">
     <div class="title_left">
-    <h3>购物车</h3>
+    <h3>历史订单</h3>
     </div>
 
     <div class="title_right">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right">
             <div class="input-group">
-            <input type="text" class="form-control" placeholder="用户名、图书名称、价格" value="<%= table.globalName %>">
+            <input type="text" class="form-control" placeholder="买家、订单号、图书名称" value="<%= table.globalName %>">
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button" onclick="shopcartSearch(this)"> 搜索 </button>
+                <button class="btn btn-default" type="button" onclick="historySearch(this)"> 搜索 </button>
             </span>
             </div>
         </div>
@@ -18,24 +18,30 @@
     <thead>
     <tr>
         <th>#</th>
+        <th>订单号</th>
         <th>用户名</th>
-        <th>图书名称</th>
-        <th>图片</th>
+        <th>商品名称</th>
+        <th>商品图片</th>
+        <th>收货人</th>
+        <th>收货地址</th>
         <th>数量</th>
-        <th>操作</th>
+        <th>付款金额</th>
     </tr>
     </thead>
     <tbody>
         <% table.Data.forEach(function(item,index){ %>
             <tr>
                 <th scope="row"><%= (table.pageNo*table.pageSize)+(index+1) %> %></th>
-                <td><%= item.Username %></td>
-                <td><%= item.BookName %></td>
-                <td><%= item.BookPhoto %></td>
-                <td><%= item.Quantity %></td>
+                <td width="80"><%= item.Trade_No %></td>
+                <td width="100"><%= item.Username %></td>
+                <td width="100"><%= item.BookName %></td>
                 <td>
-                    <button type="button" class="btn btn-danger" onclick='deleteShopcart(<%= item.Id %>)'>删除</button>
+                    <img src="<%= item.BookPhoto %>" style="width:40px;height:40px;"/> 
                 </td>
+                <td><%= item.receiver %></td>
+                <td><%= item.receiverAddress %></td>
+                <td><%= item.Quantity %></td>
+                <td width="140">RMB：<%= item.Total_Amount %>(元)</td>
             </tr>
         <% }) %>
     </tbody>

@@ -29,7 +29,7 @@ let menus=[
     },
     {
         name:'轮播图',
-        icon:'fa-cart-arrow-down',
+        icon:'fa-area-chart',
         child_menu:[
             {
                 name:'轮播图',
@@ -44,6 +44,16 @@ let menus=[
             {
                 name:'购物车',
                 href:'/admin/shopcarts'
+            }
+        ]
+    },
+    {
+        name:'订单管理',
+        icon:'fa-credit-card',
+        child_menu:[
+            {
+                name:'历史订单',
+                href:'/admin/history'
             }
         ]
     }

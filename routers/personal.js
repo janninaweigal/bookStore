@@ -7,6 +7,7 @@ import { writePhotoFile,getFileName} from '../utils/common'
 router.get('/personal', async(ctx,next)=>{
     let labels=[]
     let collection=[]
+    let orderHistory=[]
     await userModel.selectBookType().then(result=>{
         labels= result
     }).catch(()=>{})
@@ -16,11 +17,16 @@ router.get('/personal', async(ctx,next)=>{
         await userModel.selectCollectionGoods(UserId).then(res=>{
             collection=res;
         }).catch(()=>{})
+        await userModel.selectOrderHistoryByUserId(UserId).then(res=>{
+            orderHistory=res;
+        }).catch(()=>{})
+        
     }
     await ctx.render('other/personal',{
         session:ctx.session,
         navArray: switchNav(ctx.path),
         collection:collection,
+        orderHistory:orderHistory,
         labels:labels,
         footers:footers
     })
